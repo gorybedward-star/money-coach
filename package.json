@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node --test tests/*.mts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "preview:build": "npx --yes esbuild@0.24.0 preview/entry.tsx --bundle --minify --format=iife --jsx=automatic --target=es2020 --tsconfig=tsconfig.json --alias:next/link=./preview/shims/link.tsx --alias:next/navigation=./preview/shims/navigation.ts --define:process.env.NODE_ENV='\"production\"' --banner:js='var process={env:{}};' --outfile=preview/out/app.js && python3 preview/build.py"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
