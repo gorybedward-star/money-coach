@@ -18,7 +18,7 @@ import {
 } from "@/content/money-reset";
 import { PageHero, Section, SectionHeading } from "@/components/section";
 import { ButtonLink } from "@/components/ui/button";
-import { ApprovalNote, Disclosure } from "@/components/disclosure";
+import { Disclosure } from "@/components/disclosure";
 import { CtaBand } from "@/components/cta-band";
 
 export const metadata: Metadata = {
@@ -208,9 +208,6 @@ export default function MoneyResetPage() {
               <span className="font-display text-6xl font-bold">{formatOfferPrice(offer)}</span>
               <span className="text-ivory/70">for all seven weeks</span>
             </p>
-            {!features.pricingApproved && (
-              <ApprovalNote className="mt-4 border-gold/40 bg-white/10 text-ivory">Proposed launch pricing, subject to founder approval.</ApprovalNote>
-            )}
             <ul className="mt-8 space-y-4">
               {included.map(({ icon: Icon, text }) => (
                 <li key={text} className="flex gap-3">
