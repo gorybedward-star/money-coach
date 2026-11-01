@@ -1,5 +1,8 @@
 import type { LeadPayload, LeadResponse } from "@/lib/leads";
 
+/** Web3Forms key for bedwardghllc@outlook.com. Public by design. */
+const WEB3FORMS_DEFAULT_KEY = "bdeba55d-48fa-4522-b8b6-edcfa41d2597";
+
 const LABELS: Record<LeadPayload["type"], string> = {
   roadmap: "Free Money Roadmap request",
   scorecard: "Scorecard results request",
@@ -16,8 +19,11 @@ const LABELS: Record<LeadPayload["type"], string> = {
  * visitor's browser). Otherwise they go to /api/lead (see LEAD_WEBHOOK_URL).
  */
 export async function sendLead(payload: LeadPayload): Promise<LeadResponse> {
-  const key = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
-  if (!key) {
+  // Web3Forms access keys are designed to be public (they are sent from the browser);
+  // they only allow sending email to the owner's inbox. Env var overrides the default.
+  const key = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || WEB3FORMS_DEFAULT_KEY;
+  // The shareable preview build sets NEXT_PUBLIC_DISABLE_FORMS so it never sends real email.
+  if (!key || process.env.NEXT_PUBLIC_DISABLE_FORMS === "1") {
     const res = await fetch("/api/lead", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
