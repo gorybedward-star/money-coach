@@ -23,6 +23,10 @@ The plan (sitemap, visual system, homepage structure, conversion journey) is in 
 | Interactive Money Roadmap: check off steps, progress saved in the visitor's browser | Working (Phase 2) |
 | Printable / save-as-PDF results on every calculator | Working (Phase 2) |
 
+## 7-Week Client Success System (coach dashboard and client portal)
+
+Phase 1 and the Week 1 pilot live at `/coach` and `/portal`, backed by Supabase (logins + database with row-level security) and Resend (email). Setup, security model and the step-by-step test guide are in [`docs/CLIENT-SUCCESS-SYSTEM.md`](docs/CLIENT-SUCCESS-SYSTEM.md). Until the Supabase environment variables are set, these pages show an "almost ready" notice and the public site is unaffected.
+
 ## Needs founder approval or external setup
 
 | Item | Where | Current behavior |
