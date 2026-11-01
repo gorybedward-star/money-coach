@@ -8,6 +8,8 @@ const toolLinks = [
   { href: "/tools/pay-yourself-first", label: "Pay Yourself First Calculator" },
   { href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator" },
   { href: "/employee-benefits#checklist", label: "Employee Benefits Checklist" },
+  { href: "/federal-employees/tsp-checkup", label: "Free TSP Checkup" },
+  { href: "/federal-employees/calculators/agency-match", label: "TSP Agency Match Calculator" },
 ];
 
 export function SiteFooter() {

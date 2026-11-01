@@ -65,6 +65,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </ul>
           </div>
 
+          {a.sources && a.sources.length > 0 && (
+            <div className="mt-8 rounded-2xl border border-navy/10 bg-white p-6">
+              <p className="font-semibold">Official sources</p>
+              <ul className="mt-3 space-y-2 text-sm">
+                {a.sources.map((s) => (
+                  <li key={s.href}>
+                    <a href={s.href} target="_blank" rel="noopener noreferrer" className="text-emerald underline underline-offset-2">{s.label}<span className="sr-only"> (opens in a new tab)</span></a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <Disclosure className="mt-8">
             {a.disclosure ? `${a.disclosure} ` : ""}This article is general financial education, not individualized financial, investment, insurance, legal, or tax advice.
           </Disclosure>

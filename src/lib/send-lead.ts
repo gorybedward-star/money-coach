@@ -6,6 +6,7 @@ const WEB3FORMS_DEFAULT_KEY = "bdeba55d-48fa-4522-b8b6-edcfa41d2597";
 const LABELS: Record<LeadPayload["type"], string> = {
   roadmap: "Free Money Roadmap request",
   scorecard: "Scorecard results request",
+  "tsp-checkup": "TSP Checkup results request",
   "benefits-checklist": "Benefits Checklist request",
   contact: "Service request / question",
   newsletter: "Newsletter signup",

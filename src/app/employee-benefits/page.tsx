@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { Check, Lock } from "lucide-react";
 import { getOffer } from "@/config/site";
@@ -54,6 +55,16 @@ export default function EmployeeBenefitsPage() {
             </li>
           ))}
         </ul>
+      </Section>
+
+      <Section className="!py-10">
+        <Link href="/federal-employees" className="flex flex-col justify-between gap-3 rounded-[var(--radius-card)] border border-emerald/30 bg-emerald-50 p-6 transition-colors hover:border-emerald sm:flex-row sm:items-center">
+          <span>
+            <span className="block font-display text-xl font-bold">Federal employee?</span>
+            <span className="mt-1 block text-slate-600">Visit the Federal Employee Wealth Center for TSP, FERS, and federal benefits education.</span>
+          </span>
+          <span className="shrink-0 font-semibold text-emerald-700">Explore the Wealth Center →</span>
+        </Link>
       </Section>
 
       <Section>

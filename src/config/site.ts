@@ -182,6 +182,7 @@ export const mainNav = [
   { href: "/philosophy", label: "Our Philosophy" },
   { href: "/roadmap", label: "Money Roadmap" },
   { href: "/employee-benefits", label: "Employee Benefits" },
+  { href: "/federal-employees", label: "Federal Employees" },
   { href: "/tools", label: "Free Tools" },
   { href: "/pricing", label: "Coaching & Pricing" },
   { href: "/learn", label: "Learn" },
