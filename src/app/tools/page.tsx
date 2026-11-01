@@ -4,6 +4,7 @@ import { ToolCard } from "@/components/tool-card";
 import { Disclosure } from "@/components/disclosure";
 import { CtaBand } from "@/components/cta-band";
 import { tools } from "@/content/tools";
+import { fedTools } from "@/content/federal/tools";
 
 export const metadata: Metadata = {
   title: "Free Money Tools",
@@ -20,6 +21,11 @@ export default function ToolsPage() {
         <h2 className="sr-only">Available tools</h2>
         <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {live.map((t) => <li key={t.title}><ToolCard tool={t} /></li>)}
+        </ul>
+        <h2 className="mt-16 text-2xl font-bold">For federal employees</h2>
+        <p className="mt-2 text-slate-600">TSP and FERS tools from the Federal Employee Wealth Center.</p>
+        <ul className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {fedTools.map((t) => <li key={t.title}><ToolCard tool={t} /></li>)}
         </ul>
         {soon.length > 0 && (
           <>

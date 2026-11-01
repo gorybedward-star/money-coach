@@ -26,6 +26,16 @@ import Privacy from "@/app/privacy/page";
 import Terms from "@/app/terms/page";
 import Disclaimer from "@/app/disclaimer/page";
 import NotFound from "@/app/not-found";
+import Fed from "@/app/federal-employees/page";
+import FedCheckup from "@/app/federal-employees/tsp-checkup/page";
+import FedCalcs from "@/app/federal-employees/calculators/page";
+import FedMatch from "@/app/federal-employees/calculators/agency-match/page";
+import FedGrowth from "@/app/federal-employees/calculators/growth/page";
+import FedRoth from "@/app/federal-employees/calculators/roth-vs-traditional/page";
+import FedCow from "@/app/federal-employees/calculators/cost-of-waiting/page";
+import FedTspEd from "@/app/federal-employees/tsp-education/page";
+import FedBenefits from "@/app/federal-employees/benefits/page";
+import FedModulePage from "@/app/federal-employees/learn/[slug]/page";
 
 // Forms have no server in the preview: answer like a site with no email tool connected.
 const realFetch = window.fetch.bind(window);
@@ -87,6 +97,15 @@ const routes: Record<string, () => ReactNode> = {
   "/privacy": () => <Privacy />,
   "/terms": () => <Terms />,
   "/disclaimer": () => <Disclaimer />,
+  "/federal-employees": () => <Fed />,
+  "/federal-employees/tsp-checkup": () => <FedCheckup />,
+  "/federal-employees/calculators": () => <FedCalcs />,
+  "/federal-employees/calculators/agency-match": () => <FedMatch />,
+  "/federal-employees/calculators/growth": () => <FedGrowth />,
+  "/federal-employees/calculators/roth-vs-traditional": () => <FedRoth />,
+  "/federal-employees/calculators/cost-of-waiting": () => <FedCow />,
+  "/federal-employees/tsp-education": () => <FedTspEd />,
+  "/federal-employees/benefits": () => <FedBenefits />,
 };
 
 function App() {
@@ -99,6 +118,9 @@ function App() {
   else if (r.path.startsWith("/learn/")) {
     const slug = r.path.slice(7);
     page = <Async k={"a" + slug} make={() => ArticlePage({ params: Promise.resolve({ slug }) })} />;
+  } else if (r.path.startsWith("/federal-employees/learn/")) {
+    const slug = r.path.slice(25);
+    page = <Async k={"f" + slug} make={() => FedModulePage({ params: Promise.resolve({ slug }) })} />;
   } else page = <NotFound />;
   return (
     <>

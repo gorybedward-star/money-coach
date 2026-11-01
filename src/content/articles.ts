@@ -1,9 +1,11 @@
+import { federalArticles } from "./federal/articles.ts";
+
 export type Block = { h?: string; p?: string; ul?: string[]; quote?: string };
 
 export type Article = {
   slug: string;
   title: string;
-  category: "Keep" | "Protect" | "Debt" | "Grow" | "Own" | "Legacy";
+  category: "Keep" | "Protect" | "Debt" | "Grow" | "Own" | "Legacy" | "Federal";
   readMinutes: number;
   excerpt: string;
   takeaway: string;
@@ -11,6 +13,8 @@ export type Article = {
   body: Block[];
   /** Extra disclosure shown at the end of the article, in addition to the standard one. */
   disclosure?: string;
+  /** Authoritative sources linked at the end of the article. */
+  sources?: { label: string; href: string }[];
 };
 
 export const articles: Article[] = [
@@ -278,6 +282,7 @@ export const articles: Article[] = [
     ],
     disclosure: "This is general education, not legal or tax advice. Consult a licensed attorney about estate planning.",
   },
+  ...federalArticles,
 ];
 
 export function getArticle(slug: string) {

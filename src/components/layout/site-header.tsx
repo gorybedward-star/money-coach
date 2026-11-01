@@ -41,7 +41,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
         <Logo />
         <nav aria-label="Main" className="hidden xl:block">
-          <ul className="flex items-center gap-1">
+          <ul className="flex items-center gap-0.5 2xl:gap-1">
             {mainNav.map((item) => {
               const active = pathname === item.href || pathname.startsWith(item.href + "/");
               return (
@@ -50,7 +50,7 @@ export function SiteHeader() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "rounded-full px-3 py-2 text-[0.9rem] font-medium transition-colors hover:bg-navy/5",
+                      "whitespace-nowrap rounded-full px-2 py-2 text-[0.84rem] font-medium transition-colors hover:bg-navy/5 2xl:px-3 2xl:text-[0.9rem]",
                       active ? "text-emerald" : "text-navy/80",
                     )}
                   >

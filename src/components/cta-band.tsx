@@ -5,9 +5,13 @@ import { ButtonLink } from "@/components/ui/button";
 export function CtaBand({
   title = site.closing,
   intro = "Take the free Family Money Scorecard in about three minutes, or request your free Money Roadmap. No pressure, and no email needed to see your results.",
+  primary = { href: "/get-started", label: "Get My Free Money Roadmap" },
+  secondary = { href: "/tools/scorecard", label: "Take the Free Scorecard" },
 }: {
   title?: string;
   intro?: string;
+  primary?: { href: string; label: string };
+  secondary?: { href: string; label: string };
 }) {
   return (
     <section className="relative overflow-hidden bg-navy py-20 text-ivory sm:py-28">
@@ -17,11 +21,11 @@ export function CtaBand({
         <h2 className="text-balance text-3xl font-bold leading-tight sm:text-5xl">{title}</h2>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-ivory/80">{intro}</p>
         <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-          <ButtonLink href="/get-started" size="lg" variant="gold">
-            Get My Free Money Roadmap <ArrowRight />
+          <ButtonLink href={primary.href} size="lg" variant="gold">
+            {primary.label} <ArrowRight />
           </ButtonLink>
-          <ButtonLink href="/tools/scorecard" size="lg" variant="outlineLight">
-            Take the Free Scorecard
+          <ButtonLink href={secondary.href} size="lg" variant="outlineLight">
+            {secondary.label}
           </ButtonLink>
         </div>
       </div>

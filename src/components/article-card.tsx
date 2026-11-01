@@ -10,6 +10,7 @@ const categoryLabels: Record<Article["category"], string> = {
   Grow: "Grow your money",
   Own: "Own assets",
   Legacy: "Build a legacy",
+  Federal: "Federal employees",
 };
 
 export function ArticleCard({ article: a }: { article: Article }) {
