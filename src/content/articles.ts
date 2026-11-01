@@ -1,0 +1,285 @@
+export type Block = { h?: string; p?: string; ul?: string[]; quote?: string };
+
+export type Article = {
+  slug: string;
+  title: string;
+  category: "Keep" | "Protect" | "Debt" | "Grow" | "Own" | "Legacy";
+  readMinutes: number;
+  excerpt: string;
+  takeaway: string;
+  tools: { href: string; label: string }[];
+  body: Block[];
+  /** Extra disclosure shown at the end of the article, in addition to the standard one. */
+  disclosure?: string;
+};
+
+export const articles: Article[] = [
+  {
+    slug: "pay-yourself-first",
+    title: "Why You Should Always Pay Yourself First",
+    category: "Keep",
+    readMinutes: 4,
+    excerpt: "The simplest wealth habit there is, and why waiting to save what's left over almost never works.",
+    takeaway: "Decide on a percentage, automate it on payday, and treat it like a bill you owe your future family.",
+    tools: [{ href: "/tools/pay-yourself-first", label: "Pay Yourself First Calculator" }],
+    body: [
+      { p: "Most of us were taught to pay the bills, cover the groceries, handle the surprises, and then save whatever is left. The problem is that there is rarely anything left. Spending tends to grow to fill the space available." },
+      { p: "Paying yourself first flips the order. On payday, before anything else, a set portion of your income moves to savings or investments. Then you live on the rest." },
+      { h: "Why it works" },
+      { ul: [
+        "It makes saving automatic instead of a monthly decision you have to win.",
+        "It turns saving into a habit, which matters more than the amount when you are starting.",
+        "It gives you a clear number to grow over time, such as 1% more each year or with each raise.",
+      ] },
+      { h: "How to start this week" },
+      { ul: [
+        "Pick a starting percentage you can sustain. Even 1–5% counts.",
+        "Set up an automatic transfer or payroll deduction for payday.",
+        "Send it somewhere separate from your everyday checking account.",
+        "Increase it when you get a raise, pay off a debt, or finish a big expense.",
+      ] },
+      { quote: "A portion of all you earn is yours to keep. The habit comes first; the amount grows with you." },
+    ],
+  },
+  {
+    slug: "cost-of-waiting",
+    title: "The Cost of Waiting to Invest",
+    category: "Grow",
+    readMinutes: 5,
+    excerpt: "Why a few years can matter more than a few extra dollars, and how to think about starting now.",
+    takeaway: "Starting small now can matter more than starting bigger later, because time does work that money alone cannot.",
+    tools: [{ href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator" }],
+    body: [
+      { p: "It is natural to want to wait until you earn more, pay off one more bill, or feel like you understand investing better. But waiting has a cost that is easy to miss, because you never see the growth that did not happen." },
+      { h: "What waiting really costs" },
+      { p: "When money is invested, any growth it earns can itself grow in later years. That is compounding. The longer the time horizon, the more of the final balance can come from growth rather than from your own contributions." },
+      { p: "Consider two people who invest the same amount each month and earn the same hypothetical return. The one who starts ten years earlier contributes more in total, but the difference in ending balances is often far larger than the difference in contributions. Those extra years of compounding are the reason." },
+      { h: "What to do with this" },
+      { ul: [
+        "Start with what you can, even if it feels small.",
+        "Get any employer retirement match available to you first.",
+        "Increase contributions as your income grows.",
+        "Focus on consistency over trying to time the market.",
+      ] },
+    ],
+    disclosure: "Examples are hypothetical. Investment returns are not guaranteed, and investing involves risk, including the possible loss of principal.",
+  },
+  {
+    slug: "compound-interest",
+    title: "How Compound Interest Builds Wealth",
+    category: "Grow",
+    readMinutes: 4,
+    excerpt: "Growth on top of growth. The quiet engine behind long-term wealth, explained in plain English.",
+    takeaway: "Compounding rewards time and consistency. The earlier and more steadily you contribute, the more work it can do.",
+    tools: [{ href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator" }],
+    body: [
+      { p: "Simple interest pays you only on what you put in. Compound interest, or compound growth, pays you on what you put in and on the growth you have already earned." },
+      { p: "In the early years the effect looks small. Over decades it can become the largest part of a balance. That is why a long time horizon is such a powerful advantage for working families." },
+      { h: "Three levers you control" },
+      { ul: [
+        "Time: how many years your money stays invested.",
+        "Contributions: how much you add, and how regularly.",
+        "Costs: fees reduce the growth that compounds, so lower costs can matter over time.",
+      ] },
+      { p: "You do not control returns. You do control when you start, how consistent you are, and how much you pay in fees." },
+    ],
+    disclosure: "Compounding illustrations are hypothetical and assume a constant rate of return, which real investments do not provide.",
+  },
+  {
+    slug: "long-term-etf-investing",
+    title: "Why I Favor Long-Term ETF Investing",
+    category: "Grow",
+    readMinutes: 5,
+    excerpt: "Gory's personal perspective on diversified, low-cost ETFs, and why consistency beats chasing the next big thing.",
+    takeaway: "Broad diversification, low costs, and a long time horizon are principles worth understanding before you choose any investment.",
+    tools: [{ href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator" }],
+    body: [
+      { p: "I started investing in stocks at 18. Over the years I learned that building wealth was not about finding the next hot stock. It was about doing a few simple things consistently for a long time." },
+      { h: "What an ETF is" },
+      { p: "An exchange-traded fund, or ETF, is a fund that holds a basket of investments and trades on an exchange like a stock. Many ETFs track a broad market index, which can give you exposure to hundreds or thousands of companies in a single purchase." },
+      { h: "Why I like broad, low-cost ETFs" },
+      { ul: [
+        "Diversification: owning many companies can reduce the impact of any single one failing.",
+        "Low costs: many broad index ETFs have low expense ratios, which leaves more growth for you.",
+        "Simplicity: you can invest consistently without researching individual companies.",
+      ] },
+      { h: "What ETFs are not" },
+      { p: "ETFs are not guaranteed. They go up and down with the markets they hold, and some ETFs are narrow, complex, or expensive. Not every ETF is diversified or low-cost. Your goals, timeline, and risk tolerance matter." },
+      { quote: "This is my personal philosophy as an investor, shared for education. It is not a recommendation for you to buy any specific investment." },
+    ],
+    disclosure: "This article reflects the founder's personal views and is for education only. It is not investment advice or a recommendation of any security or strategy. Consider speaking with a licensed financial professional.",
+  },
+  {
+    slug: "eliminating-credit-card-debt",
+    title: "Eliminating Credit Card and Personal Debt",
+    category: "Debt",
+    readMinutes: 5,
+    excerpt: "Snowball or avalanche? Two proven ways to pay off costly debt, and how to choose the one you will stick with.",
+    takeaway: "List every debt, pick snowball or avalanche, and send every extra dollar to one debt at a time.",
+    tools: [{ href: "/tools", label: "Debt Payoff Calculator (coming soon)" }],
+    body: [
+      { p: "High-interest debt is one of the biggest obstacles to building wealth. When a credit card charges a high APR, it can be hard for savings or investments to keep up. Paying it off is one of the most reliable ways to free up cash flow." },
+      { h: "Step 1: Get it all on paper" },
+      { p: "Write down every credit card and personal loan with its balance, interest rate, and minimum payment. Seeing the full picture is uncomfortable, and it is also where progress starts." },
+      { h: "Step 2: Choose a method" },
+      { ul: [
+        "Debt snowball: pay minimums on everything, and put every extra dollar toward the smallest balance first. Quick wins build momentum.",
+        "Debt avalanche: pay minimums on everything, and put every extra dollar toward the highest interest rate first. This usually costs less in total interest.",
+      ] },
+      { p: "The best method is the one you will actually follow. Some people need the motivation of early wins. Others are motivated by the math." },
+      { h: "Step 3: Stop adding new debt" },
+      { p: "Keep a starter emergency fund so surprises do not go back on a card, and consider pausing card use while you pay down balances." },
+    ],
+  },
+  {
+    slug: "employer-retirement-matching",
+    title: "Understanding Employer Retirement Matching",
+    category: "Grow",
+    readMinutes: 4,
+    excerpt: "Your match is part of your pay. Here's how matching formulas and vesting work.",
+    takeaway: "Learn your plan's exact match formula and vesting schedule, and contribute enough to receive the full match if you can.",
+    tools: [
+      { href: "/employee-benefits", label: "Employee Benefits Checkup" },
+      { href: "/tools", label: "Employer Match Calculator (coming soon)" },
+    ],
+    body: [
+      { p: "Many employers add money to your retirement account when you contribute. This is called a match, and it is part of your total compensation." },
+      { h: "Common formulas" },
+      { p: "A plan might match 100% of what you contribute up to a certain percentage of pay, or 50% up to a different percentage. Each plan is different, so check your plan documents for the exact formula and any annual limits." },
+      { h: "Vesting" },
+      { p: "Your own contributions are always yours. Employer contributions may vest over time, meaning you could forfeit some of them if you leave before a certain number of years. Knowing your vesting schedule can matter when you are considering a job change." },
+      { h: "Questions to ask HR" },
+      { ul: ["What is the exact matching formula?", "Is the match calculated each paycheck or with an annual true-up?", "What is the vesting schedule?", "Am I automatically enrolled, and at what rate?"] },
+    ],
+    disclosure: "Plan rules vary. Your employer's plan documents and administrator determine actual eligibility, matching, and vesting.",
+  },
+  {
+    slug: "employee-benefits-you-may-be-missing",
+    title: "Employee Benefits You May Be Missing",
+    category: "Protect",
+    readMinutes: 5,
+    excerpt: "HSAs, dependent care, tuition help, and more. The benefits working families most often overlook.",
+    takeaway: "Review your full benefits guide once a year, before open enrollment, with a checklist in hand.",
+    tools: [{ href: "/employee-benefits#checklist", label: "Employee Benefits Checklist" }],
+    body: [
+      { p: "Most people pick a medical plan, maybe sign up for the retirement plan, and never look at the rest of their benefits guide. That can mean missing real value." },
+      { h: "Often-overlooked benefits" },
+      { ul: [
+        "Health Savings Accounts, sometimes with an employer contribution.",
+        "Dependent care FSAs that can lower childcare costs.",
+        "Tuition reimbursement and student loan repayment assistance.",
+        "Supplemental life and disability coverage.",
+        "Wellness incentives and premium discounts.",
+        "Employee stock purchase plans.",
+        "Paid family leave and caregiver benefits.",
+      ] },
+      { p: "Each benefit has its own rules, costs, and deadlines. The goal is not to sign up for everything. It is to know what is available so you can make informed choices." },
+    ],
+    disclosure: "Benefit availability and eligibility vary by employer. Your plan documents and administrator determine actual coverage.",
+  },
+  {
+    slug: "term-vs-permanent-life-insurance",
+    title: "Term vs. Permanent Life Insurance",
+    category: "Protect",
+    readMinutes: 6,
+    excerpt: "The basic difference between the two main types of life insurance, explained without a sales pitch.",
+    takeaway: "Understand what each type is designed to do before talking with a licensed professional about your family's needs.",
+    tools: [{ href: "/tools", label: "Life Insurance Needs Estimator (coming soon)" }],
+    body: [
+      { p: "Life insurance is meant to protect the people who depend on you if you die. It is an important consideration for many families, and the right type and amount depend on individual circumstances." },
+      { h: "Term life insurance" },
+      { p: "Term coverage lasts for a set period, such as 10, 20, or 30 years. If you die during the term, the policy pays a death benefit. If the term ends, coverage generally ends too. Term coverage often costs less for the same death benefit." },
+      { h: "Permanent life insurance" },
+      { p: "Permanent policies, such as whole life and universal life, are designed to last for your lifetime as long as premiums are paid, and many build cash value. They are generally more expensive and more complex, with features and fees that are important to understand." },
+      { h: "Questions to think through" },
+      { ul: ["Who depends on your income, and for how long?", "What debts would need to be paid?", "What coverage do you already have through work?", "Would coverage continue if you changed jobs?"] },
+    ],
+    disclosure: "MONEY COACH does not sell insurance and does not recommend specific products. Speak with a licensed insurance professional about your situation.",
+  },
+  {
+    slug: "building-an-emergency-fund",
+    title: "Building an Emergency Fund",
+    category: "Protect",
+    readMinutes: 4,
+    excerpt: "The cushion that keeps a bad week from becoming a debt problem.",
+    takeaway: "Start with one month of essential expenses, keep it separate, and build toward three to six months over time.",
+    tools: [{ href: "/tools", label: "Emergency Fund Calculator (coming soon)" }],
+    body: [
+      { p: "An emergency fund is money set aside for real emergencies: a job loss, a medical bill, a car repair you cannot avoid. It is the difference between a hard week and a new credit card balance." },
+      { h: "How much" },
+      { p: "A common educational guideline is three to six months of essential expenses. Households with variable income or one earner may want more. If that feels far away, start with a starter goal of one month." },
+      { h: "Where to keep it" },
+      { p: "Keep it separate from everyday checking so it is not accidentally spent, and somewhere you can reach quickly when you need it." },
+      { h: "How to build it" },
+      { ul: ["Automate a transfer every payday.", "Direct windfalls like tax refunds toward it.", "Refill it after you use it."] },
+    ],
+  },
+  {
+    slug: "teaching-children-about-money",
+    title: "Teaching Your Children About Money",
+    category: "Legacy",
+    readMinutes: 4,
+    excerpt: "Small, age-appropriate conversations that build big lifelong habits.",
+    takeaway: "Children learn money from what they see. Talk openly, let them practice, and start early.",
+    tools: [{ href: "/roadmap#build-and-transfer-wealth", label: "Money Roadmap Stage 6" }],
+    body: [
+      { p: "Many of us never learned money at home. That is not a failure. It is an opportunity to give your children something you did not get." },
+      { h: "By age" },
+      { ul: [
+        "Young children: use clear jars for saving, spending, and giving.",
+        "Pre-teens: give a small budget for something real, like back-to-school clothes.",
+        "Teens: open a savings account together, talk about paychecks, and explain how credit works.",
+        "Young adults: talk about employer benefits, retirement accounts, and the cost of waiting.",
+      ] },
+      { p: "Above all, let them see you pay yourself first. Habits are passed down." },
+    ],
+  },
+  {
+    slug: "rental-properties",
+    title: "Building Wealth Through Rental Properties",
+    category: "Own",
+    readMinutes: 6,
+    excerpt: "What owning rental property really involves: the potential, the work, and the risks.",
+    takeaway: "Rental property can be a path to ownership, and it is a business. Build your foundation first and understand the risks.",
+    tools: [{ href: "/philosophy#own-assets", label: "Pillar 5: Own Assets" }],
+    body: [
+      { p: "Owning rental property is part of my own journey. It can offer rental income and long-term appreciation, but it is not passive and it is not risk-free." },
+      { h: "What to understand first" },
+      { ul: [
+        "Cash flow: rent minus mortgage, taxes, insurance, maintenance, and vacancies.",
+        "Reserves: repairs and vacancies happen, so cash reserves matter.",
+        "Leverage: borrowing can magnify both gains and losses.",
+        "Responsibility: tenants, repairs, and local landlord laws are real obligations.",
+      ] },
+      { h: "Foundation before property" },
+      { p: "Before considering rental property, many families benefit from having an emergency fund, little or no high-interest debt, and consistent retirement investing in place." },
+    ],
+    disclosure: "Real estate investing involves significant risk. This is general education, not investment, legal, or tax advice. Consult licensed professionals before investing.",
+  },
+  {
+    slug: "family-financial-legacy",
+    title: "Creating a Family Financial Legacy",
+    category: "Legacy",
+    readMinutes: 5,
+    excerpt: "Legacy is more than an inheritance. It is the habits, knowledge, and plans you pass on.",
+    takeaway: "Keep beneficiaries current, learn basic estate planning concepts, and teach the next generation what you know.",
+    tools: [{ href: "/roadmap#build-and-transfer-wealth", label: "Money Roadmap Stage 6" }],
+    body: [
+      { p: "Generational wealth starts with one generation deciding to do things differently. It is built from habits as much as from assets." },
+      { h: "Building blocks of a legacy" },
+      { ul: [
+        "Current beneficiaries on every retirement account and insurance policy.",
+        "A basic understanding of wills, trusts, and powers of attorney.",
+        "Assets that can grow and be passed on.",
+        "Children who understand how money works.",
+        "A family that talks about money openly.",
+      ] },
+      { p: "Estate planning rules vary by state and by family. A licensed estate planning attorney can help you put the right documents in place." },
+    ],
+    disclosure: "This is general education, not legal or tax advice. Consult a licensed attorney about estate planning.",
+  },
+];
+
+export function getArticle(slug: string) {
+  return articles.find((a) => a.slug === slug);
+}
