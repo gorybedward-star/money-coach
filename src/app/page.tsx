@@ -5,6 +5,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Section, SectionHeading, Eyebrow } from "@/components/section";
 import { ImagePlaceholder } from "@/components/image-placeholder";
+import { FounderPhoto } from "@/components/founder-photo";
 import { Reveal } from "@/components/reveal";
 import { PillarsGrid } from "@/components/home/pillars-grid";
 import { RoadmapStepper } from "@/components/home/roadmap-stepper";
@@ -80,11 +81,7 @@ export default function HomePage() {
       <Section tone="navy" id="meet-gory">
         <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <Reveal>
-            <ImagePlaceholder
-              tone="dark"
-              label="Professional portrait of Gory Bedward, founder"
-              className="aspect-[4/3] w-full max-w-md sm:aspect-[4/5]"
-            />
+            <FounderPhoto className="aspect-[4/5] w-full max-w-md" />
           </Reveal>
           <Reveal delay={100}>
             <Eyebrow light>Meet your coach</Eyebrow>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Anchor, Heart, Target, TrendingUp } from "lucide-react";
 import { site } from "@/config/site";
 import { PageHero, Section, SectionHeading } from "@/components/section";
-import { ImagePlaceholder } from "@/components/image-placeholder";
+import { FounderPhoto } from "@/components/founder-photo";
 import { FounderMilestones } from "@/components/founder-milestones";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
@@ -27,7 +27,7 @@ export default function AboutPage() {
       <Section>
         <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           <Reveal>
-            <ImagePlaceholder label="Professional portrait of Gory Bedward" className="aspect-[4/5] w-full lg:sticky lg:top-28" />
+            <FounderPhoto priority className="aspect-[4/5] w-full max-w-md lg:sticky lg:top-28" />
           </Reveal>
           <div>
             <SectionHeading eyebrow="My story" title={`Hi, I'm ${site.founder.firstName}.`} />

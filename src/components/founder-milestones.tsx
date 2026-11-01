@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export function FounderMilestones({ light = false }: { light?: boolean }) {
   return (
     <div>
-      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {founderMilestones.map((m) => (
           <div
             key={m.label}
