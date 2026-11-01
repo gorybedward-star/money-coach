@@ -42,7 +42,7 @@ export const roadmapStages: RoadmapStage[] = [
       "Set a starter goal of one month of essentials",
       "Decide what counts as an emergency",
     ],
-    tools: [{ href: "/tools", label: "Emergency Fund Calculator (coming soon)", available: false }],
+    tools: [{ href: "/tools/emergency-fund", label: "Emergency Fund Calculator", available: true }],
   },
   {
     n: 3,
@@ -60,7 +60,7 @@ export const roadmapStages: RoadmapStage[] = [
     ],
     tools: [
       { href: "/employee-benefits#checklist", label: "Employee Benefits Checklist", available: true },
-      { href: "/tools", label: "Life Insurance Needs Estimator (coming soon)", available: false },
+      { href: "/tools/life-insurance", label: "Life Insurance Needs Estimator", available: true },
     ],
   },
   {
@@ -76,7 +76,7 @@ export const roadmapStages: RoadmapStage[] = [
       "Put every extra dollar toward one debt at a time",
       "Celebrate each debt you eliminate",
     ],
-    tools: [{ href: "/tools", label: "Debt Payoff Calculator (coming soon)", available: false }],
+    tools: [{ href: "/tools/debt-payoff", label: "Debt Payoff Calculator", available: true }],
   },
   {
     n: 5,
@@ -93,7 +93,7 @@ export const roadmapStages: RoadmapStage[] = [
     ],
     tools: [
       { href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator", available: true },
-      { href: "/tools", label: "Employer Match Calculator (coming soon)", available: false },
+      { href: "/tools/employer-match", label: "Employer Match Calculator", available: true },
     ],
   },
   {

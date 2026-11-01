@@ -18,13 +18,17 @@ export default function ToolsPage() {
       <PageHero eyebrow="Free money tools" title="Clear numbers. No email required." intro="Simple calculators that explain their assumptions and show hypothetical illustrations, never guarantees." />
       <Section>
         <h2 className="sr-only">Available tools</h2>
-        <ul className="grid gap-5 md:grid-cols-2">
+        <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {live.map((t) => <li key={t.title}><ToolCard tool={t} /></li>)}
         </ul>
-        <h2 className="mt-16 text-2xl font-bold">Coming soon</h2>
-        <ul className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {soon.map((t) => <li key={t.title}><ToolCard tool={t} /></li>)}
-        </ul>
+        {soon.length > 0 && (
+          <>
+            <h2 className="mt-16 text-2xl font-bold">Coming soon</h2>
+            <ul className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {soon.map((t) => <li key={t.title}><ToolCard tool={t} /></li>)}
+            </ul>
+          </>
+        )}
         <Disclosure className="mt-12" />
       </Section>
       <CtaBand />

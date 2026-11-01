@@ -23,7 +23,7 @@ export default function PrivacyPage() {
         <li>To operate, secure, and improve the website.</li>
       </ul>
       <h2>Sharing</h2>
-      <p>We do not sell your personal information. We may share it with service providers who help us operate the site and send email [LIST PROVIDERS ONCE SELECTED], who may only use it on our behalf, or when required by law.</p>
+      <p>We do not sell your personal information. We may share it with service providers who help us operate the site and send email such as our website host and our form-to-email provider (Web3Forms) [CONFIRM FINAL PROVIDER LIST], who may only use it on our behalf, or when required by law.</p>
       <h2>Cookies and analytics</h2>
       <p>[TO BE COMPLETED once analytics or other tracking tools are selected. As built, the site does not set advertising or analytics cookies.]</p>
       <h2>Data retention</h2>

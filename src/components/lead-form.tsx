@@ -3,7 +3,8 @@
 import { useId, useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2, Mail } from "lucide-react";
 import { site } from "@/config/site";
-import type { LeadPayload, LeadResponse, LeadType } from "@/lib/leads";
+import type { LeadPayload, LeadType } from "@/lib/leads";
+import { sendLead } from "@/lib/send-lead";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -64,8 +65,7 @@ export function LeadForm({
 
     setStatus({ state: "sending" });
     try {
-      const res = await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      const data = (await res.json()) as LeadResponse;
+      const data = await sendLead(payload);
       if (!data.ok) setStatus({ state: "error", message: data.error });
       else setStatus({ state: "done", delivered: data.delivered });
     } catch {
