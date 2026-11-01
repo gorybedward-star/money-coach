@@ -31,7 +31,7 @@ export default async function GetStartedPage({ searchParams }: { searchParams: P
           <Step icon={Map} n={2} title="Get your free Money Roadmap" body="Tell us where to send it and we'll email an educational Family Money Roadmap.">
             <ButtonLink href="#roadmap" variant="outline" className="mt-6">Request my Roadmap</ButtonLink>
           </Step>
-          <Step icon={MessageCircle} n={3} title="Talk with a coach" body="Request a Benefits Checkup, Clarity Session, or Wealth Roadmap.">
+          <Step icon={MessageCircle} n={3} title="Talk with a coach" body="Request a Clarity Session, Benefits Checkup, or the 7-Week Money Reset.">
             <ButtonLink href="#contact" variant="outline" className="mt-6">Request a session</ButtonLink>
           </Step>
         </div>

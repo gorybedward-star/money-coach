@@ -8,7 +8,7 @@ import { CtaBand } from "@/components/cta-band";
 
 export const metadata: Metadata = {
   title: "Coaching & Pricing",
-  description: "Affordable financial coaching for working families. Start free, then choose a Money Clarity Session, Employee Benefits Checkup, Family Wealth Roadmap, or ongoing coaching.",
+  description: "Affordable financial coaching for working families. Start free, then choose a Money Clarity Session, Employee Benefits Checkup, the 7-Week Money Reset, or ongoing coaching.",
 };
 
 const faqs = [

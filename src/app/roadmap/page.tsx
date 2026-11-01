@@ -69,7 +69,12 @@ export default function RoadmapPage() {
           speaking with licensed professionals about investment, insurance, legal, and tax decisions.
         </Disclosure>
       </Section>
-      <CtaBand title="Not sure which stage you're in?" intro="The free Family Money Scorecard shows where you stand and suggests three next steps in about three minutes." />
+      <CtaBand
+        title="Want a coach to walk the Roadmap with you?"
+        intro="The 7-Week Money Reset takes you through these stages one week at a time, from your numbers and debt to protecting your family and investing, with one clear money move each week and a coach keeping you accountable."
+        primary={{ href: "/money-reset", label: "See the 7-Week Money Reset" }}
+        secondary={{ href: "/tools/scorecard", label: "Take the Free Scorecard" }}
+      />
     </>
   );
 }

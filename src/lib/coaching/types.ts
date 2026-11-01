@@ -86,6 +86,7 @@ export type Intake = {
   retirement_overview: string | null;
   retirement_contribution_pct: number | null;
   employee_benefits: string | null;
+  insurance_coverage: string | null;
   consent_privacy: boolean;
   consent_coaching_comms: boolean;
   submitted_at: string;

@@ -43,9 +43,9 @@ export const resetWeeks = [
     theme: "Resilience",
     mindset: "Having a margin of safety protects you from uncertainty.",
     babyStep: "Baby Step 3: Save 3 to 6 months of expenses in a fully funded emergency fund.",
-    action: "Calculate your emergency fund target and set up an automatic savings plan.",
-    question: "Could you handle a $1,000 emergency today without borrowing?",
-    deliverable: "Financial Security Blueprint",
+    action: "Calculate your emergency fund target, set up an automatic savings plan, and review your life, disability, and health coverage and beneficiaries.",
+    question: "If you couldn't work for six months, or weren't here tomorrow, would your family be protected?",
+    deliverable: "Financial Security & Protection Blueprint",
   },
   {
     n: 5,
@@ -89,7 +89,7 @@ export const resetFramework = [
 export const resetPrinciples = [
   { title: "Behavior before math", body: "Spreadsheets don't change lives; habits do. When your spending behavior changes, progress lasts." },
   { title: "One thing at a time", body: "You leave every session with one clear action, not a list of ten tasks." },
-  { title: "Stability before aggressive investing", body: "High-interest debt, emergency savings, and your employer match come first. The order adapts to your situation." },
+  { title: "Stability before aggressive investing", body: "High-interest debt, emergency savings, the right insurance protection, and your employer match come first. The order adapts to your situation." },
   { title: "No judgment", body: "Everyone has made money mistakes. This is a safe place to talk about yours and move forward." },
   { title: "Progress you can measure", body: "We track debt paid down, savings built, habits changed, and actions completed. We never promise investment returns." },
 ] as const;
@@ -99,6 +99,7 @@ export const resetOutcomes = [
   "Better money habits that stick",
   "A plan to eliminate costly debt",
   "A financial cushion for life's surprises",
+  "Insurance protection reviewed, so one setback can't undo your progress",
   "Workplace benefits you're actually using",
   "A personal 12-month financial roadmap",
 ] as const;
@@ -140,6 +141,10 @@ export const resetFaqs = [
     a: "No. We teach how investing works (diversified low-cost funds, compounding, time horizons, risk) so you can make informed decisions. We don't pick specific securities or manage money, and we'll point you to a licensed professional when that's what you need.",
   },
   {
+    q: "Do you sell insurance?",
+    a: "No. Protecting your family is part of every plan, so we help you understand the coverage you have (life, disability, health, and beneficiaries), spot possible gaps, and know what to ask. Insurance is regulated by each state, and only a licensed agent can recommend or sell a policy. We don't sell insurance, recommend specific policies, or earn commissions. When you're ready to act, we'll encourage you to talk with a licensed insurance professional.",
+  },
+  {
     q: "Is this based on a book or a famous program?",
     a: "Our approach draws on well-known ideas from behavioral finance and the popular Baby Steps framework, adapted to your circumstances. Money Coach is independent and not affiliated with or endorsed by Morgan Housel, Dave Ramsey, or Ramsey Solutions.",
   },
@@ -165,6 +170,8 @@ export const scorecardRows = [
   { measure: "Credit-card debt", start: "Baseline", end: "Updated" },
   { measure: "Monthly cash flow", start: "Baseline", end: "Updated" },
   { measure: "Retirement contribution", start: "Baseline", end: "Updated" },
+  { measure: "Insurance protection (life, disability, health)", start: "Not reviewed", end: "Reviewed" },
+  { measure: "Beneficiaries", start: "Not checked", end: "Current" },
   { measure: "Employer benefits", start: "Not reviewed", end: "Reviewed" },
   { measure: "90-day money goal", start: "Undefined", end: "Established" },
 ] as const;

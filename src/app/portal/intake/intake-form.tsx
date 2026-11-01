@@ -118,6 +118,11 @@ export function IntakeForm({ intake, client }: { intake: Intake | null; client: 
           <Label htmlFor="employee_benefits">Benefits available through work (optional)</Label>
           <Textarea id="employee_benefits" name="employee_benefits" maxLength={2000} className="min-h-20" defaultValue={v?.employee_benefits ?? ""} placeholder="e.g. employer match, HSA, life insurance, FERS, pension, tuition help" />
         </div>
+        <div>
+          <Label htmlFor="insurance_coverage">Insurance protection you have today (optional)</Label>
+          <Textarea id="insurance_coverage" name="insurance_coverage" maxLength={2000} className="min-h-20" defaultValue={v?.insurance_coverage ?? ""} placeholder="e.g. life insurance through work (1x salary), no disability coverage, health plan through spouse, not sure who my beneficiaries are" />
+          <p className="mt-1 text-xs text-slate-600">Rough answers are fine. Please don&rsquo;t include policy numbers.</p>
+        </div>
       </Section>
 
       <Section title="Privacy and consent">
