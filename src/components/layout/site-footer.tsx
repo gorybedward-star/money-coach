@@ -39,7 +39,7 @@ export function SiteFooter() {
             </Link>
             .
           </p>
-          <p className="mt-4">© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+          <p className="mt-4">© {new Date().getFullYear()} {site.legalName}. {site.name} is owned and operated by {site.legalName}. All rights reserved.</p>
         </div>
       </div>
     </footer>

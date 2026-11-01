@@ -7,6 +7,8 @@
 
 export const site = {
   name: "MONEY COACH",
+  /** Legal entity that owns and operates MONEY COACH. */
+  legalName: "Novus Core Holdings, LLC",
   tagline: "Building Wealth. Protecting Families. Creating Legacies.",
   promise:
     "We help families turn income into security, security into wealth, and wealth into legacy.",

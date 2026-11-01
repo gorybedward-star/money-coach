@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Privacy Policy", robots: { index: fa
 export default function PrivacyPage() {
   return (
     <LegalPage title="Privacy Policy" updated="[DATE]">
-      <p>This Privacy Policy explains how {site.name} (&ldquo;we,&rdquo; &ldquo;us&rdquo;) collects, uses, and protects information when you use this website.</p>
+      <p>This Privacy Policy explains how {site.legalName}, doing business as {site.name} (&ldquo;we,&rdquo; &ldquo;us&rdquo;), collects, uses, and protects information when you use this website.</p>
       <h2>Information we collect</h2>
       <ul>
         <li><strong>Information you choose to give us:</strong> your first name (optional), email address, the service you&rsquo;re interested in, and any message you send through a form.</li>

@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Financial Education Disclaimer" };
 export default function DisclaimerPage() {
   return (
     <LegalPage title="Financial Education Disclaimer" updated="[DATE]">
-      <p>{site.name} is an education-first business. Everything on this website and in our coaching is provided for general educational and informational purposes only.</p>
+      <p>{site.name}, owned and operated by {site.legalName}, is an education-first business. Everything on this website and in our coaching is provided for general educational and informational purposes only.</p>
       <h2>Not professional advice</h2>
       <p>{site.name} and its founder, {site.founder.name}, are not registered investment advisers, broker-dealers, licensed insurance agents, certified financial planners, attorneys, CPAs, or fiduciaries. We do not provide individualized investment recommendations, sell insurance or investment products, or give legal or tax advice. Consider consulting appropriately licensed professionals before making financial decisions.</p>
       <h2>Investing involves risk</h2>

@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Terms of Use", robots: { index: fals
 export default function TermsPage() {
   return (
     <LegalPage title="Terms of Use" updated="[DATE]">
-      <p>By using this website, you agree to these Terms of Use. If you do not agree, please do not use the site.</p>
+      <p>This website is operated by {site.legalName}, doing business as {site.name} (&ldquo;we,&rdquo; &ldquo;us&rdquo;). By using this website, you agree to these Terms of Use. If you do not agree, please do not use the site.</p>
       <h2>Educational purpose</h2>
       <p>{site.name} provides general financial education and coaching. Content, calculators, the Scorecard, and coaching sessions are educational and are not individualized investment, insurance, legal, tax, or financial planning advice. Please read our <Link href="/disclaimer">Financial Education Disclaimer</Link>.</p>
       <h2>No professional relationship</h2>
@@ -20,7 +20,7 @@ export default function TermsPage() {
       <h2>Your responsibilities</h2>
       <p>Please don&rsquo;t submit sensitive information such as Social Security numbers, account credentials, or medical details, and don&rsquo;t misuse the site or attempt to disrupt it.</p>
       <h2>Intellectual property</h2>
-      <p>All content on this site is owned by {site.name} or used with permission and may not be copied or redistributed without written consent, except for personal, non-commercial use.</p>
+      <p>All content on this site is owned by {site.legalName} or used with permission and may not be copied or redistributed without written consent, except for personal, non-commercial use.</p>
       <h2>Disclaimer of warranties and limitation of liability</h2>
       <p>The site is provided &ldquo;as is.&rdquo; To the fullest extent permitted by law, {site.name} disclaims all warranties and is not liable for losses arising from use of the site or reliance on its content. [ATTORNEY TO DRAFT FINAL LANGUAGE.]</p>
       <h2>Governing law</h2>
