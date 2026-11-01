@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export function PricingCards({ ids }: { ids?: string[] }) {
-  const list = ids ? offers.filter((o) => ids.includes(o.id)) : offers;
+  // The 7-Week Money Reset is a program with its own page and banner, not a card.
+  const list = ids ? offers.filter((o) => ids.includes(o.id)) : offers.filter((o) => o.id !== "reset");
   return (
     <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
       {list.map((o) => (

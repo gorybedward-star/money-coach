@@ -234,6 +234,7 @@ async function sendPostSession(client: Client, commitment: Commitment, weekTitle
       first_name: client.first_name,
       week_number: String(commitment.week_number),
       week_title: weekTitle,
+      objective: commitment.objective,
       session_summary: commitment.session_summary ?? "",
       action: commitment.action,
       deadline: formatDate(commitment.deadline),

@@ -62,10 +62,10 @@ export function CommitmentForm({
       <div className="space-y-4">
         {completeState && <FormMessage state={completeState} className={emailWarn ? "bg-gold-50 text-navy" : undefined} />}
         <dl className="space-y-3 text-sm">
-          <Row label="Objective" value={commitment.objective} />
-          <Row label="One agreed action" value={commitment.action} strong />
+          <Row label="This week's priority" value={commitment.objective} />
+          <Row label="My commitment" value={commitment.action} strong />
           <Row label="Deadline" value={formatDate(commitment.deadline)} />
-          <Row label="Success criteria" value={commitment.success_criteria} />
+          <Row label="How we'll measure success" value={commitment.success_criteria} />
           {commitment.session_summary && <Row label="Session summary (emailed)" value={commitment.session_summary} />}
           <Row label="Status" value={commitmentStatusLabel[commitment.status]} />
         </dl>
@@ -78,15 +78,15 @@ export function CommitmentForm({
       <input type="hidden" name="client_id" value={clientId} />
       <input type="hidden" name="week" value={week} />
       <p className="text-sm text-slate-600">
-        Every session ends with one specific, measurable action. {firstName} sees it in the portal once you approve it.
+        One action. One deadline. One measurable result. {firstName} sees this card in the portal once you approve it.
       </p>
       <div>
-        <Label htmlFor="objective">Financial objective</Label>
-        <Input id="objective" name="objective" maxLength={500} defaultValue={commitment?.objective || defaultObjective} />
+        <Label htmlFor="objective">This week&rsquo;s priority</Label>
+        <Input id="objective" name="objective" maxLength={500} defaultValue={commitment?.objective || defaultObjective} placeholder="e.g. Start building my $1,000 emergency fund." />
       </div>
       <div>
-        <Label htmlFor="action">One agreed action</Label>
-        <Textarea id="action" name="action" maxLength={500} className="min-h-20" defaultValue={commitment?.action ?? ""} placeholder="e.g. Open a separate savings account and set up a $25 weekly transfer" />
+        <Label htmlFor="action">My commitment</Label>
+        <Textarea id="action" name="action" maxLength={500} className="min-h-20" defaultValue={commitment?.action ?? ""} placeholder="e.g. I will transfer $25 into a dedicated savings account by Friday." />
       </div>
       <div className="grid gap-4 sm:grid-cols-[0.8fr_1.2fr]">
         <div>
@@ -94,8 +94,8 @@ export function CommitmentForm({
           <Input id="deadline" name="deadline" type="date" defaultValue={commitment?.deadline ?? ""} />
         </div>
         <div>
-          <Label htmlFor="success_criteria">How we&rsquo;ll measure it</Label>
-          <Input id="success_criteria" name="success_criteria" maxLength={500} defaultValue={commitment?.success_criteria ?? ""} placeholder="e.g. Account open and first $25 transferred" />
+          <Label htmlFor="success_criteria">How we&rsquo;ll measure success</Label>
+          <Input id="success_criteria" name="success_criteria" maxLength={500} defaultValue={commitment?.success_criteria ?? ""} placeholder="e.g. The transfer is completed and my savings balance is updated." />
         </div>
       </div>
       <div>
