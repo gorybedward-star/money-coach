@@ -31,7 +31,7 @@ The plan (sitemap, visual system, homepage structure, conversion journey) is in 
 | About page and founder story copy | `src/app/about/page.tsx` | Draft in Gory's voice; please edit to taste |
 | Founder and family photos | `ImagePlaceholder` usages | Labeled placeholders |
 | Contact email | `NEXT_PUBLIC_CONTACT_EMAIL` | bedwardghllc@outlook.com |
-| Form delivery (email) | `NEXT_PUBLIC_WEB3FORMS_KEY` (or `LEAD_WEBHOOK_URL`) | Not connected until a key is set: forms validate, then tell the visitor to email instead. Nothing is stored |
+| Form delivery (email) | Web3Forms key in `src/lib/send-lead.ts` | Connected: forms email bedwardghllc@outlook.com |
 | Booking | `NEXT_PUBLIC_BOOKING_URL` | "Coming soon" note |
 | Payments | `features.paymentsEnabled` | Disabled. Services are requested through the contact form |
 | Legal pages | `src/app/{privacy,terms,disclaimer}` | Drafts with `[BRACKETED]` gaps; attorney review required |
@@ -73,7 +73,9 @@ npm run build && npm start
 
 ## Connecting form delivery
 
-**Easiest (free, about 2 minutes):**
+**Already connected:** the Web3Forms key for bedwardghllc@outlook.com is set in `src/lib/send-lead.ts` (Web3Forms keys are public by design). To use a different inbox, create a new key and set `NEXT_PUBLIC_WEB3FORMS_KEY` in Vercel, which overrides it.
+
+**Setting up a new key (free, about 2 minutes):**
 
 1. Go to https://web3forms.com, enter `bedwardghllc@outlook.com`, and click **Create Access Key**. The key arrives by email.
 2. In Vercel → your project → **Settings → Environment Variables**, add `NEXT_PUBLIC_WEB3FORMS_KEY` with that key.
