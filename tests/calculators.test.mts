@@ -60,3 +60,68 @@ test("scorecard scoring and next steps", () => {
   assert.equal(r.nextSteps[0].title, scorecardQuestions.find((q) => q.id === "debt")!.nextStep.title);
   assert.equal(r.nextSteps[1].title, scorecardQuestions.find((q) => q.id === "match")!.nextStep.title);
 });
+
+import { compoundGrowth, emergencyFund, payoffPlan, employerMatch, lifeInsuranceNeeds } from "../src/lib/calculators.ts";
+
+test("compoundGrowth series and totals", () => {
+  const r = compoundGrowth({ startingBalance: 1000, monthlyContribution: 100, annualReturnPct: 0, years: 10 });
+  close(r.finalValue, 13000);
+  close(r.totalContributions, 13000);
+  assert.equal(r.series.length, 11);
+  const g = compoundGrowth({ startingBalance: 1000, monthlyContribution: 100, annualReturnPct: 6, years: 10 });
+  assert.ok(g.growth > 0);
+});
+
+test("emergencyFund target, gap, timeline", () => {
+  const r = emergencyFund({ monthlyEssentials: 3000, currentSavings: 2000, targetMonths: 3, monthlySaving: 500 });
+  close(r.target, 9000);
+  close(r.gap, 7000);
+  assert.equal(r.monthsToGoal, 14);
+  assert.equal(emergencyFund({ monthlyEssentials: 3000, currentSavings: 2000, targetMonths: 3, monthlySaving: 0 }).monthsToGoal, null);
+  assert.equal(emergencyFund({ monthlyEssentials: 1000, currentSavings: 5000, targetMonths: 3, monthlySaving: 0 }).gap, 0);
+});
+
+test("payoffPlan: single 0% debt pays off exactly", () => {
+  const r = payoffPlan([{ id: "a", name: "A", balance: 1000, apr: 0, minPayment: 100 }], 0, "snowball");
+  assert.equal(r.months, 10);
+  close(r.totalInterest, 0);
+  close(r.totalPaid, 1000);
+});
+
+test("payoffPlan: avalanche never costs more interest than snowball", () => {
+  const debts = [
+    { id: "a", name: "Small low", balance: 800, apr: 9, minPayment: 30 },
+    { id: "b", name: "Big high", balance: 6000, apr: 26, minPayment: 150 },
+    { id: "c", name: "Mid", balance: 2500, apr: 18, minPayment: 75 },
+  ];
+  const s = payoffPlan(debts, 200, "snowball");
+  const a = payoffPlan(debts, 200, "avalanche");
+  assert.ok(a.totalInterest <= s.totalInterest + 0.01);
+  assert.equal(s.order[0].id, "a");
+  assert.equal(a.order.at(-1)!.id !== "b" || a.order.length === 3, true);
+  assert.ok(!s.neverPaysOff && !a.neverPaysOff);
+  // Extra payments speed payoff
+  assert.ok(payoffPlan(debts, 0, "avalanche").months > a.months);
+});
+
+test("payoffPlan: flags debts that never pay off", () => {
+  const r = payoffPlan([{ id: "a", name: "A", balance: 10000, apr: 30, minPayment: 100 }], 0, "avalanche");
+  assert.ok(r.neverPaysOff);
+});
+
+test("employerMatch tiers", () => {
+  const tiers = [{ matchPct: 100, onUpToPct: 3 }, { matchPct: 50, onUpToPct: 2 }];
+  const r = employerMatch({ salary: 50000, employeeRatePct: 4, tiers });
+  close(r.employee, 2000);
+  close(r.employer, 1750); // 3% + 0.5%
+  assert.equal(r.fullMatchAt, 5);
+  close(r.maxEmployer, 2000);
+  close(r.missed, 250);
+  close(employerMatch({ salary: 50000, employeeRatePct: 10, tiers }).employer, 2000);
+});
+
+test("lifeInsuranceNeeds gap", () => {
+  const r = lifeInsuranceNeeds({ annualIncome: 50000, yearsToReplace: 10, dependents: 2, educationPerChild: 25000, mortgageBalance: 150000, otherDebts: 10000, finalExpenses: 15000, existingCoverage: 100000, availableAssets: 20000 });
+  close(r.totalNeeds, 725000);
+  close(r.gap, 605000);
+});

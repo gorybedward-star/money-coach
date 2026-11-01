@@ -18,8 +18,8 @@ export const site = {
     "Practical, affordable financial education for working families. Keep more of what you earn, maximize employer benefits, eliminate costly debt, protect your family, and build wealth that lasts.",
   // Set NEXT_PUBLIC_SITE_URL in your environment for correct SEO URLs.
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  // [FOUNDER APPROVAL] Replace with the real business email before launch.
-  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hello@example.com",
+  // Business contact email (can be overridden with NEXT_PUBLIC_CONTACT_EMAIL).
+  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "bedwardghllc@outlook.com",
   founder: {
     name: "Gory H. Bedward",
     firstName: "Gory",

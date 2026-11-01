@@ -18,7 +18,9 @@ The plan (sitemap, visual system, homepage structure, conversion journey) is in 
 | Learn library: 12 original introductory articles with takeaways, tool links, disclosures | Built |
 | Privacy Policy, Terms of Use, Financial Education Disclaimer | Drafts, marked for legal review |
 | SEO metadata, Open Graph, `sitemap.xml`, `robots.txt`, 404 | Built |
-| Compound Growth, Emergency Fund, Debt Payoff, Employer Match, Life Insurance calculators | Phase 2 (shown as "Coming soon") |
+| Compound Growth, Emergency Fund, Debt Payoff (snowball vs. avalanche), Employer Match, Life Insurance Needs calculators | Working (Phase 2) |
+| Interactive Money Roadmap: check off steps, progress saved in the visitor's browser | Working (Phase 2) |
+| Printable / save-as-PDF results on every calculator | Working (Phase 2) |
 
 ## Needs founder approval or external setup
 
@@ -28,8 +30,8 @@ The plan (sitemap, visual system, homepage structure, conversion journey) is in 
 | Founder milestones ($500K, 800 credit, etc.) | `src/config/site.ts` → `founderMilestones` | Shown with a "founder-reported, pending confirmation" note until `features.milestonesConfirmed = true` |
 | About page and founder story copy | `src/app/about/page.tsx` | Draft in Gory's voice; please edit to taste |
 | Founder and family photos | `ImagePlaceholder` usages | Labeled placeholders |
-| Contact email | `NEXT_PUBLIC_CONTACT_EMAIL` | `hello@example.com` placeholder |
-| Form delivery (email/CRM) | `LEAD_WEBHOOK_URL` | Not connected: forms validate, then honestly tell the visitor to email instead. Nothing is stored |
+| Contact email | `NEXT_PUBLIC_CONTACT_EMAIL` | bedwardghllc@outlook.com |
+| Form delivery (email) | `NEXT_PUBLIC_WEB3FORMS_KEY` (or `LEAD_WEBHOOK_URL`) | Not connected until a key is set: forms validate, then tell the visitor to email instead. Nothing is stored |
 | Booking | `NEXT_PUBLIC_BOOKING_URL` | "Coming soon" note |
 | Payments | `features.paymentsEnabled` | Disabled. Services are requested through the contact form |
 | Legal pages | `src/app/{privacy,terms,disclaimer}` | Drafts with `[BRACKETED]` gaps; attorney review required |
@@ -70,6 +72,14 @@ npm run build && npm start
 | Brand colors and fonts | `src/app/globals.css` (`@theme`) and `src/app/layout.tsx` |
 
 ## Connecting form delivery
+
+**Easiest (free, about 2 minutes):**
+
+1. Go to https://web3forms.com, enter `bedwardghllc@outlook.com`, and click **Create Access Key**. The key arrives by email.
+2. In Vercel → your project → **Settings → Environment Variables**, add `NEXT_PUBLIC_WEB3FORMS_KEY` with that key.
+3. Redeploy. Every form (Roadmap requests, Scorecard results, Benefits Checklist, contact) now arrives in that inbox, including whether the visitor opted in to marketing emails.
+
+**Alternative (webhook):**
 
 All forms post to `/api/lead`, which validates input and, if `LEAD_WEBHOOK_URL` is set, forwards JSON like:
 

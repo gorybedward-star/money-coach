@@ -71,7 +71,7 @@ export const articles: Article[] = [
     readMinutes: 4,
     excerpt: "Growth on top of growth. The quiet engine behind long-term wealth, explained in plain English.",
     takeaway: "Compounding rewards time and consistency. The earlier and more steadily you contribute, the more work it can do.",
-    tools: [{ href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator" }],
+    tools: [{ href: "/tools/compound-growth", label: "Compound Growth Calculator" }, { href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator" }],
     body: [
       { p: "Simple interest pays you only on what you put in. Compound interest, or compound growth, pays you on what you put in and on the growth you have already earned." },
       { p: "In the early years the effect looks small. Over decades it can become the largest part of a balance. That is why a long time horizon is such a powerful advantage for working families." },
@@ -116,7 +116,7 @@ export const articles: Article[] = [
     readMinutes: 5,
     excerpt: "Snowball or avalanche? Two proven ways to pay off costly debt, and how to choose the one you will stick with.",
     takeaway: "List every debt, pick snowball or avalanche, and send every extra dollar to one debt at a time.",
-    tools: [{ href: "/tools", label: "Debt Payoff Calculator (coming soon)" }],
+    tools: [{ href: "/tools/debt-payoff", label: "Debt Payoff Calculator" }],
     body: [
       { p: "High-interest debt is one of the biggest obstacles to building wealth. When a credit card charges a high APR, it can be hard for savings or investments to keep up. Paying it off is one of the most reliable ways to free up cash flow." },
       { h: "Step 1: Get it all on paper" },
@@ -140,7 +140,7 @@ export const articles: Article[] = [
     takeaway: "Learn your plan's exact match formula and vesting schedule, and contribute enough to receive the full match if you can.",
     tools: [
       { href: "/employee-benefits", label: "Employee Benefits Checkup" },
-      { href: "/tools", label: "Employer Match Calculator (coming soon)" },
+      { href: "/tools/employer-match", label: "Employer Match Calculator" },
     ],
     body: [
       { p: "Many employers add money to your retirement account when you contribute. This is called a match, and it is part of your total compensation." },
@@ -184,7 +184,7 @@ export const articles: Article[] = [
     readMinutes: 6,
     excerpt: "The basic difference between the two main types of life insurance, explained without a sales pitch.",
     takeaway: "Understand what each type is designed to do before talking with a licensed professional about your family's needs.",
-    tools: [{ href: "/tools", label: "Life Insurance Needs Estimator (coming soon)" }],
+    tools: [{ href: "/tools/life-insurance", label: "Life Insurance Needs Estimator" }],
     body: [
       { p: "Life insurance is meant to protect the people who depend on you if you die. It is an important consideration for many families, and the right type and amount depend on individual circumstances." },
       { h: "Term life insurance" },
@@ -203,7 +203,7 @@ export const articles: Article[] = [
     readMinutes: 4,
     excerpt: "The cushion that keeps a bad week from becoming a debt problem.",
     takeaway: "Start with one month of essential expenses, keep it separate, and build toward three to six months over time.",
-    tools: [{ href: "/tools", label: "Emergency Fund Calculator (coming soon)" }],
+    tools: [{ href: "/tools/emergency-fund", label: "Emergency Fund Calculator" }],
     body: [
       { p: "An emergency fund is money set aside for real emergencies: a job loss, a medical bill, a car repair you cannot avoid. It is the difference between a hard week and a new credit card balance." },
       { h: "How much" },

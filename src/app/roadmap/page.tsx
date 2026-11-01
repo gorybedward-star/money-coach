@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, Flag, Wrench } from "lucide-react";
+import { Flag, Wrench } from "lucide-react";
+import { RoadmapOverallProgress, StageChecklist } from "@/components/roadmap-progress";
 import { PageHero, Section } from "@/components/section";
 import { RoadmapStepper } from "@/components/home/roadmap-stepper";
 import { CtaBand } from "@/components/cta-band";
@@ -19,10 +20,11 @@ export default function RoadmapPage() {
       <PageHero
         eyebrow="The Money Roadmap"
         title="Six stages from paycheck to legacy."
-        intro="A clear, step-by-step path for working families. Stages often overlap, and your priorities may differ from another household's. Use the Roadmap as a guide, not a rulebook."
+        intro="Check off steps as you go. A clear, step-by-step path for working families. Stages often overlap, and your priorities may differ from another household's. Use the Roadmap as a guide, not a rulebook."
       />
       <Section tone="white" className="!py-12">
         <RoadmapStepper />
+        <div className="mt-10"><RoadmapOverallProgress /></div>
       </Section>
 
       {roadmapStages.map((s, i) => (
@@ -55,14 +57,7 @@ export default function RoadmapPage() {
                   {s.milestones.map((m) => <li key={m} className="border-l-2 border-gold/50 pl-3">{m}</li>)}
                 </ul>
               </div>
-              <div className="rounded-[var(--radius-card)] border border-navy/10 bg-white p-6 shadow-soft">
-                <p className="flex items-center gap-2 font-semibold"><CheckCircle2 className="size-4 text-emerald" aria-hidden /> Checklist</p>
-                <ul className="mt-4 space-y-3 text-sm leading-relaxed">
-                  {s.checklist.map((c) => (
-                    <li key={c} className="flex gap-2.5"><span aria-hidden className="mt-1 size-3.5 shrink-0 rounded border-2 border-emerald/50" />{c}</li>
-                  ))}
-                </ul>
-              </div>
+              <StageChecklist stageId={s.id} items={s.checklist} />
             </div>
           </div>
         </Section>
