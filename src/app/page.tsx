@@ -4,7 +4,7 @@ import { getOffer, site } from "@/config/site";
 import { ButtonLink } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Section, SectionHeading, Eyebrow } from "@/components/section";
-import { ImagePlaceholder } from "@/components/image-placeholder";
+import { HeroIllustration } from "@/components/home/hero-illustration";
 import { FounderPhoto } from "@/components/founder-photo";
 import { Reveal } from "@/components/reveal";
 import { PillarsGrid } from "@/components/home/pillars-grid";
@@ -64,11 +64,8 @@ export default function HomePage() {
             </p>
           </div>
           <div className="relative animate-fade-up [animation-delay:150ms]">
-            <ImagePlaceholder
-              label="Warm, authentic photo of a working family at home, planning together"
-              className="aspect-[4/3] w-full shadow-lift sm:aspect-square lg:aspect-[4/5]"
-            />
-            <div className="absolute -bottom-6 -left-4 max-w-[15rem] rounded-2xl border border-navy/10 bg-white p-4 shadow-lift sm:-left-8">
+            <HeroIllustration className="aspect-square h-auto w-full rounded-[var(--radius-card)] shadow-lift lg:aspect-[4/5]" />
+            <div className="relative mt-4 sm:max-w-[15rem] rounded-2xl border border-navy/10 bg-white p-4 shadow-lift sm:absolute sm:-bottom-6 sm:-left-8 sm:mt-0">
               <p className="text-xs font-semibold uppercase tracking-wider text-emerald">Start free</p>
               <p className="mt-1 font-display text-lg font-bold leading-snug">Family Money Scorecard</p>
               <p className="mt-1 text-xs text-slate-600">10 questions · about 3 minutes · no email needed</p>
