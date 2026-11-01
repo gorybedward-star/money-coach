@@ -9,7 +9,7 @@ import { Reveal } from "@/components/reveal";
 
 export const metadata: Metadata = {
   title: "About Gory",
-  description: "Meet Gory Bedward, U.S. Navy veteran and founder of MONEY COACH, on a mission to make practical financial education affordable for working families.",
+  description: "Meet Gory H. Bedward, U.S. Navy veteran and founder of MONEY COACH, on a mission to make practical financial education affordable for working families.",
 };
 
 const habits = [

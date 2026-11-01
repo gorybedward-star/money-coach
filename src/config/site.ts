@@ -19,7 +19,7 @@ export const site = {
   // [FOUNDER APPROVAL] Replace with the real business email before launch.
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hello@example.com",
   founder: {
-    name: "Gory Bedward",
+    name: "Gory H. Bedward",
     firstName: "Gory",
     title: "Founder, MONEY COACH",
     background: "U.S. Navy veteran",
