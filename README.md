@@ -11,6 +11,7 @@ The plan (sitemap, visual system, homepage structure, conversion journey) is in 
 | Area | Status |
 |---|---|
 | Home, Our Philosophy, Money Roadmap, Employee Benefits, Free Tools, Coaching & Pricing, Learn, About Gory, Get Started | Built |
+| Family Budget Builder (5 steps, any pay frequency, live checkup, saved in browser) | Working |
 | Family Money Scorecard (10 questions, scoring, interpretation, 3 next steps, optional email) | Working |
 | Pay Yourself First Calculator | Working |
 | Cost of Waiting Calculator (with chart and catch-up amount) | Working |
