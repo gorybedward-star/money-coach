@@ -25,6 +25,7 @@ export const roadmapStages: RoadmapStage[] = [
       "Set up an automatic savings transfer",
     ],
     tools: [
+      { href: "/tools/budget", label: "Family Budget Builder", available: true },
       { href: "/tools/pay-yourself-first", label: "Pay Yourself First Calculator", available: true },
       { href: "/tools/scorecard", label: "Family Money Scorecard", available: true },
     ],

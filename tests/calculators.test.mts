@@ -125,3 +125,33 @@ test("lifeInsuranceNeeds gap", () => {
   close(r.totalNeeds, 725000);
   close(r.gap, 605000);
 });
+
+import { toMonthly, summarize, exampleBudget, blankBudget } from "../src/lib/budget.ts";
+
+test("budget: frequency conversion", () => {
+  close(toMonthly(100, "weekly"), 433.33);
+  close(toMonthly(1000, "biweekly"), 2166.67);
+  close(toMonthly(1200, "yearly"), 100);
+  close(toMonthly(-5, "monthly"), 0);
+});
+
+test("budget: summary math and checks", () => {
+  const b = blankBudget();
+  b.income[0].amount = "4000";
+  b.save[0].amount = "400";
+  b.essentials[0].amount = "1600"; // rent 40%
+  b.debt[0].amount = "800"; // 20%
+  b.lifestyle[0].amount = "1200";
+  const s = summarize(b);
+  close(s.income, 4000);
+  close(s.planned, 4000);
+  close(s.left, 0);
+  close(s.pct(s.totals.save), 10);
+  close(s.housing, 1600);
+  const titles = s.checks.map((c) => c.title).join(" | ");
+  assert.match(titles, /pay yourself first: 10%/);
+  assert.match(titles, /Every dollar has a job/);
+  assert.match(titles, /Housing is 40%/);
+  assert.match(titles, /Debt payments take 20%/);
+  assert.ok(summarize(exampleBudget()).income > 0);
+});

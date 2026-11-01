@@ -4,6 +4,7 @@ import { Logo } from "./logo";
 
 const toolLinks = [
   { href: "/tools/scorecard", label: "Family Money Scorecard" },
+  { href: "/tools/budget", label: "Family Budget Builder" },
   { href: "/tools/pay-yourself-first", label: "Pay Yourself First Calculator" },
   { href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator" },
   { href: "/employee-benefits#checklist", label: "Employee Benefits Checklist" },

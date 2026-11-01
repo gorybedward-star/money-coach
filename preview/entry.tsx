@@ -11,6 +11,7 @@ import Tools from "@/app/tools/page";
 import Scorecard from "@/app/tools/scorecard/page";
 import PYF from "@/app/tools/pay-yourself-first/page";
 import COW from "@/app/tools/cost-of-waiting/page";
+import BG from "@/app/tools/budget/page";
 import CG from "@/app/tools/compound-growth/page";
 import EF from "@/app/tools/emergency-fund/page";
 import DP from "@/app/tools/debt-payoff/page";
@@ -74,6 +75,7 @@ const routes: Record<string, () => ReactNode> = {
   "/tools/scorecard": () => <Scorecard />,
   "/tools/pay-yourself-first": () => <PYF />,
   "/tools/cost-of-waiting": () => <COW />,
+  "/tools/budget": () => <BG />,
   "/tools/compound-growth": () => <CG />,
   "/tools/emergency-fund": () => <EF />,
   "/tools/debt-payoff": () => <DP />,

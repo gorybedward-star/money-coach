@@ -18,8 +18,8 @@ export const scorecardQuestions: ScorecardQuestion[] = [
       title: "Track one month of spending",
       detail:
         "Write down your take-home pay and every bill and purchase for 30 days. Clarity comes before every other step.",
-      href: "/roadmap#know-your-numbers",
-      linkLabel: "See Roadmap Stage 1",
+      href: "/tools/budget",
+      linkLabel: "Use the Family Budget Builder",
     },
   },
   {
