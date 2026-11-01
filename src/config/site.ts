@@ -135,6 +135,24 @@ export const offers: Offer[] = [
     href: "/get-started?service=roadmap",
   },
   {
+    id: "reset",
+    name: "The 7-Week Money Reset",
+    price: 497,
+    cadence: "one-time",
+    deliverable: "Seven one-on-one sessions and a personal financial roadmap",
+    description:
+      "Our flagship coaching program. One week, one objective, one money move, with a coach keeping you accountable the whole way.",
+    includes: [
+      "Seven 50-minute one-on-one coaching sessions",
+      "Your own private client portal with weekly checklists",
+      "A clear One Money Move every week, with reminders",
+      "Graduation scorecard, 90-day plan, and 12-month roadmap",
+    ],
+    bestFor: "Families ready to change their money habits for good",
+    ctaLabel: "See the 7-week program",
+    href: "/money-reset",
+  },
+  {
     id: "coaching",
     name: "Ongoing Money Coaching",
     price: 79,

@@ -12,7 +12,7 @@ import {
   toggleChecklistItem,
 } from "@/lib/actions/coach";
 import { coachTimeZone, formatAppointment, formatDate, utcToLocalInput } from "@/lib/coaching/time";
-import { sessionGuide, SESSION_MINUTES } from "@/lib/coaching/session-guide";
+import { closingChecks, closingQuestion, sessionGuide, SESSION_MINUTES } from "@/lib/coaching/session-guide";
 import {
   commitmentStatusLabel,
   type Client,
@@ -97,27 +97,23 @@ export default async function WeekWorkspace({ params }: { params: Promise<{ id: 
         )}
       </div>
 
-      {/* The objective of the call, at a glance */}
+      {/* The five standards for this call, at a glance */}
       <Card className="mt-6">
-        <CardContent className="grid gap-6 md:grid-cols-3">
-          <div className="md:col-span-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Objective</p>
-            <p className="mt-1 text-lg font-semibold">{week.objective}</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Psychology of money</p>
-            <p className="mt-1">{week.psychology_principle}</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Baby Step call to action</p>
-            <p className="mt-1">{week.baby_step}</p>
-            {week.baby_step_note && <p className="mt-1 text-sm text-slate-600">{week.baby_step_note}</p>}
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Deliverable · success measure</p>
-            <p className="mt-1">{week.deliverable}</p>
-            <p className="mt-1 text-sm text-slate-600">{week.success_measure}</p>
-          </div>
+        <CardContent>
+          <p className="text-xs font-semibold uppercase tracking-wider text-gold-600">This call&rsquo;s five standards</p>
+          <dl className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            <Standard n={1} label="Clear objective" value={week.objective} />
+            <Standard n={2} label="Financial principle" value={week.psychology_principle} />
+            <Standard n={3} label="Practical action" value={week.baby_step} note={week.baby_step_note} />
+            <Standard n={4} label="Measurable result" value={week.success_measure} />
+            <Standard n={5} label="Deliverable" value={week.deliverable} />
+          </dl>
+          {week.coaching_question && (
+            <p className="mt-6 rounded-xl bg-ivory px-4 py-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-600">Coaching question</span>
+              <span className="mt-1 block font-display text-lg">&ldquo;{week.coaching_question}&rdquo;</span>
+            </p>
+          )}
         </CardContent>
       </Card>
 
@@ -137,6 +133,15 @@ export default async function WeekWorkspace({ params }: { params: Promise<{ id: 
                 </li>
               ))}
             </ol>
+            <div className="mt-5 rounded-xl border border-emerald/30 bg-emerald-50 p-4 text-sm">
+              <p className="font-semibold">End every call with:</p>
+              <p className="mt-1 font-display text-base">&ldquo;{closingQuestion}&rdquo;</p>
+              <ul className="mt-2 list-disc space-y-0.5 pl-5 text-slate-600">
+                {closingChecks.map((q) => (
+                  <li key={q}>{q}</li>
+                ))}
+              </ul>
+            </div>
           </Block>
 
           <Block title="Appointment" aside={<span className="text-sm text-slate-600">{formatAppointment(session?.scheduled_at ?? null)}</span>}>
@@ -178,7 +183,7 @@ export default async function WeekWorkspace({ params }: { params: Promise<{ id: 
               clientId={id}
               week={weekNumber}
               firstName={client.first_name}
-              defaultObjective={week.objective}
+              defaultObjective=""
               commitment={commitment}
               completed={completed}
               save={saveCommitment}
@@ -250,6 +255,19 @@ export default async function WeekWorkspace({ params }: { params: Promise<{ id: 
           </Block>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Standard({ n, label, value, note }: { n: number; label: string; value: string; note?: string }) {
+  return (
+    <div>
+      <dt className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-600">
+        <span className="flex size-5 items-center justify-center rounded-full bg-gold text-[10px] font-bold text-navy">{n}</span>
+        {label}
+      </dt>
+      <dd className="mt-1.5 leading-snug">{value}</dd>
+      {note && <dd className="mt-1 text-sm text-slate-600">{note}</dd>}
     </div>
   );
 }

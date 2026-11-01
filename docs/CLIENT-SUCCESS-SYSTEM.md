@@ -23,6 +23,10 @@ One Week. One Objective. One Money Move. Measurable Progress.
 
 The public website is unchanged except for a **Client login** link in the footer.
 
+## The coaching framework
+
+Every call follows five standards: one clear objective, one financial principle, one practical action, one measurable result, and one deliverable. Each week also has a coaching question, and every call ends with: "What's the one money move you will make this week that your future self will thank you for?" The answer becomes the commitment card (This week's priority, My commitment, How we'll measure success, deadline). Public description: `/money-reset` (copy in `src/content/money-reset.ts`).
+
 ## How security works
 
 1. **Login:** Supabase Auth, email and password. Public sign-up is turned off; only the coach creates client accounts.

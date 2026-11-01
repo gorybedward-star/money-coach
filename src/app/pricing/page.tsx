@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { features, formatOfferCadence, formatOfferPrice, offers } from "@/config/site";
+import { features, formatOfferCadence, formatOfferPrice, getOffer, offers } from "@/config/site";
+import { ButtonLink } from "@/components/ui/button";
 import { PageHero, Section, SectionHeading } from "@/components/section";
 import { PricingCards } from "@/components/pricing-cards";
 import { ApprovalNote } from "@/components/disclosure";
@@ -16,10 +17,11 @@ const faqs = [
   { q: "What do I need to share?", a: "Only what you're comfortable sharing, like general numbers about income, expenses, and debts. We never ask for Social Security numbers, account passwords, or medical information." },
   { q: "How do sessions happen?", a: "Sessions are held by video or phone. After you submit a request, we'll follow up to schedule a time that works for you." },
   { q: "How do I pay?", a: "Online payment isn't available yet. After you request a service, we'll confirm details and next steps with you directly before anything is charged." },
-  { q: "Which service should I start with?", a: "Start with the free Scorecard. If you have workplace benefits, the Employee Benefits Checkup is our most popular first step. If you feel overwhelmed, a Money Clarity Session is a great place to begin." },
+  { q: "Which service should I start with?", a: "Start with the free Scorecard. If you want lasting change with a coach keeping you accountable, the 7-Week Money Reset is our flagship program. If you have workplace benefits, the Employee Benefits Checkup is our most popular first step. If you feel overwhelmed, a Money Clarity Session is a great place to begin." },
 ];
 
 export default function PricingPage() {
+  const reset = getOffer("reset");
   return (
     <>
       <PageHero
@@ -33,6 +35,20 @@ export default function PricingPage() {
       </PageHero>
 
       <Section tone="white">
+        {reset && (
+          <div className="mb-12 flex flex-col gap-6 rounded-[var(--radius-card)] border-2 border-gold bg-navy p-7 text-ivory shadow-lift sm:p-9 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Flagship coaching program</p>
+              <h2 className="mt-2 text-3xl font-bold">{reset.name}</h2>
+              <p className="mt-3 text-ivory/80">{reset.description}</p>
+            </div>
+            <div className="shrink-0 lg:text-right">
+              <p className="font-display text-5xl font-bold">{formatOfferPrice(reset)}</p>
+              <p className="text-sm text-ivory/70">for all seven weeks</p>
+              <ButtonLink href={reset.href} variant="gold" className="mt-4">{reset.ctaLabel}</ButtonLink>
+            </div>
+          </div>
+        )}
         <PricingCards />
       </Section>
 

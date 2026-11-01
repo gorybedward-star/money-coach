@@ -94,7 +94,10 @@ create index on public.client_invites (client_id);
 create table public.curriculum_weeks (
   week_number int primary key check (week_number between 1 and 7),
   title text not null,
+  -- Journey theme shown on the tracker (Awareness, Clarity, ...).
+  theme text not null default '',
   psychology_principle text not null,
+  coaching_question text not null default '',
   lesson text not null default '',
   baby_step text not null,
   baby_step_note text not null default '',
@@ -498,36 +501,55 @@ revoke all on public.client_invites from authenticated;
 -- affiliated with or endorsed by Morgan Housel, Dave Ramsey or Ramsey Solutions.
 -- =============================================================================
 insert into public.curriculum_weeks
-  (week_number, title, psychology_principle, lesson, baby_step, baby_step_note, objective, prep_assignment, deliverable, success_measure, published)
+  (week_number, title, theme, psychology_principle, coaching_question, lesson, baby_step, baby_step_note, objective, prep_assignment, deliverable, success_measure, published)
 values
-  (1, 'Understand Your Money Story',
-   'Our financial decisions are shaped by personal experiences and beliefs.',
+  (1, 'Understand Your Money Story', 'Awareness',
+   'Your personal experiences influence how you handle money.',
+   'What is one thing you do with money that you know isn''t helping your future?',
    E'Everyone carries a money story. It comes from the home you grew up in, the first paycheck you earned, the times money felt tight, and the people you watched handle it. None of that makes you good or bad with money. It simply explains why some choices feel automatic.\n\nThis week is about noticing your story without judging it. When you can name the moments that trigger spending, or the beliefs that make saving feel hard, you get to choose a different response.\n\nWe will also start a small cushion of savings. A starter emergency fund turns a surprise expense into an inconvenience instead of a new debt. The amount matters less than the habit of protecting it.',
    'Baby Step 1: Save a $1,000 starter emergency fund.',
    'Use this as a guide, not a test. If $1,000 is not realistic yet, we will set a first target that is, and build from there.',
-   'Identify the most important financial behavior to improve and establish a realistic starter savings goal.',
-   'Complete your confidential intake questionnaire and think about one spending habit you would like to change.',
-   'Personal Money Commitment and Starter Savings Plan',
+   'Identify one spending habit to change and set an achievable first savings target.',
+   'Complete your confidential intake questionnaire and notice one spending habit you would like to change.',
+   'Money Commitment + Starter Savings Plan',
    'Intake completed and first savings action documented.',
    true),
-  (2, 'Take Control of Cash Flow',
-   'Wealth is influenced by the difference between what you earn and what you spend.',
-   '', 'Prepare for Baby Step 2: Pay off non-mortgage debt.', '', '', '', 'Monthly Money Plan and Debt Inventory', '', false),
-  (3, 'Break the Debt Cycle',
-   'Financial progress requires discipline and control over lifestyle inflation.',
-   '', 'Baby Step 2: Pay off non-mortgage debt.', '', '', '', 'Personal Debt Freedom Roadmap', '', false),
-  (4, 'Create Financial Security',
-   'A margin of safety protects against financial uncertainty.',
-   '', 'Baby Step 3: Save 3–6 months of expenses.', '', '', '', 'Financial Security Blueprint', '', false),
-  (5, 'Start Building Wealth',
-   'Compounding rewards patience, consistency, and time.',
-   '', 'Baby Step 4: Invest 15% of gross household income for retirement, when appropriate.', '', '', '', 'Retirement and Investing Action Plan', '', false),
-  (6, 'Maximize Financial Opportunities',
-   'Small, consistent financial decisions create long-term opportunities.',
-   '', 'Baby Steps 5 and 6: Save for children''s college; pay off the home early.', '', '', '', 'Employee Benefits and Financial Opportunities Checklist', '', false),
-  (7, 'Build Your Financial Freedom Plan',
-   'The greatest value of money is having more control over your time and choices.',
-   '', 'Baby Step 7: Build wealth and give generously.', '', '', '', 'Personal Financial Freedom Roadmap and Money Coach Graduation Scorecard', '', false);
+  (2, 'Take Control of Your Money', 'Clarity',
+   'Building wealth depends on the gap between what you earn and what you spend.',
+   'If we could free up $200 a month without changing your income, where would it come from?',
+   '', 'Prepare for Baby Step 2: Pay off all non-mortgage debt using the debt snowball.', '',
+   'Create a monthly spending plan and list every debt from smallest balance to largest.', '',
+   'Monthly Money Plan + Debt Inventory', 'Cash-flow position calculated and one expense improvement selected.', false),
+  (3, 'Break the Debt Cycle', 'Control',
+   'True financial progress requires controlling lifestyle inflation and debt.',
+   'What would your life look like without credit-card payments?',
+   '', 'Baby Step 2: Pay off all non-mortgage debt.', '',
+   'Select the first debt to attack and establish a realistic extra-payment amount.', '',
+   'Personal Debt Freedom Roadmap', 'Priority debt identified and repayment action scheduled or completed.', false),
+  (4, 'Create Financial Security', 'Resilience',
+   'Having a margin of safety protects you from uncertainty.',
+   'Could you handle a $1,000 emergency today without borrowing?',
+   '', 'Baby Step 3: Save 3–6 months of expenses in a fully funded emergency fund.', '',
+   'Calculate the emergency fund target and establish an automatic savings plan.', '',
+   'Financial Security Blueprint', 'Emergency savings target and contribution schedule documented.', false),
+  (5, 'Start Building Wealth', 'Growth',
+   'Compounding is powerful when you give it time.',
+   'What could consistently investing a manageable amount every payday mean for your future?',
+   '', 'Baby Step 4: Invest 15% of household gross income for retirement.', '',
+   'Review retirement accounts and establish a contribution target consistent with financial readiness.', '',
+   'Retirement & Investing Plan', 'Current contribution rate calculated and next action identified.', false),
+  (6, 'Maximize Your Financial Opportunities', 'Optimization',
+   'Long-term wealth comes from consistent, intentional decisions.',
+   'Are you leaving valuable employer benefits unused?',
+   '', 'Baby Step 5: Save for children''s college. Baby Step 6: Pay off your home early.', '',
+   'Choose the most relevant goal: education savings, mortgage planning, or maximizing employer benefits.', '',
+   'Benefits & Long-Term Goals Review', 'One valuable opportunity verified and an action completed or scheduled.', false),
+  (7, 'Build Your Financial Freedom Plan', 'Independence',
+   'The greatest benefit of money is freedom and control over your time.',
+   'What would financial freedom allow you to do that you cannot comfortably do today?',
+   '', 'Baby Step 7: Build wealth and give generously.', '',
+   'Commit to one 90-day priority and build a 12-month financial roadmap.', '',
+   'Personal Financial Freedom Roadmap', 'Completed 90-day priority and 12-month action plan.', false);
 
 insert into public.curriculum_items (week_number, audience, position, label) values
   (1, 'coach', 1, 'Complete the initial financial intake.'),
@@ -544,7 +566,7 @@ insert into public.curriculum_items (week_number, audience, position, label) val
   (1, 'client', 5, 'Make or schedule an affordable initial savings contribution.');
 
 -- Email templates. Placeholders: {{first_name}}, {{link}}, {{portal_link}},
--- {{week_number}}, {{week_title}}, {{action}}, {{deadline}}, {{success_criteria}},
+-- {{week_number}}, {{week_title}}, {{objective}}, {{action}}, {{deadline}}, {{success_criteria}},
 -- {{session_summary}}, {{appointment}}, {{coach_name}}.
 insert into public.email_templates (key, name, subject, body) values
   ('welcome', 'Welcome email',
@@ -552,7 +574,7 @@ insert into public.email_templates (key, name, subject, body) values
    E'Hi {{first_name}},\n\nWelcome to Money Coach!\n\nI''m excited to work with you over the next seven weeks.\n\nI believe building wealth starts with something simple: making better financial decisions consistently over time.\n\nOur coaching approach draws inspiration from two powerful financial philosophies:\n\nThe Psychology of Money — understanding how our experiences, habits, and emotions influence financial decisions.\n\nThe Seven Baby Steps — using practical, structured actions to reduce debt, build financial security, and work toward financial independence.\n\nBut here''s what makes our program different:\n\nWe''re going to focus on one thing at a time.\n\nEach week, we''ll work together on one financial objective, identify one action you can take, and measure your progress.\n\nOver seven weeks, we''ll cover your money story, cash flow, debt, financial security, investing, financial opportunities, and long-term freedom goals.\n\nYou don''t need to have everything figured out before we start.\n\nYou simply need to be willing to learn, participate, and take action.\n\nYour first step: Complete your confidential Money Coach intake questionnaire before our first session.\n\n[button:Start my secure intake]({{link}})\n\nThis personal link works once and expires in 14 days.\n\nI look forward to helping you build a stronger financial future.\n\n{{coach_name}}\nMoney Coach\nOne Week. One Objective. One Money Move.'),
   ('post_session', 'Post-session commitment',
    'Your One Money Move for Week {{week_number}}',
-   E'Hi {{first_name}},\n\nThank you for today''s session on Week {{week_number}}: {{week_title}}.\n\n{{session_summary}}\n\nHere is the One Money Move we agreed on:\n\nMy One Money Move: {{action}}\nDeadline: {{deadline}}\nHow we''ll measure it: {{success_criteria}}\n\nYou can see your checklist and update your progress anytime in your secure portal.\n\n[button:Open my Money Coach portal]({{portal_link}})\n\nOne week. One objective. One money move. You''ve got this.\n\n{{coach_name}}\nMoney Coach'),
+   E'Hi {{first_name}},\n\nThank you for today''s session on Week {{week_number}}: {{week_title}}.\n\n{{session_summary}}\n\nHere is your weekly commitment card:\n\nMY ONE MONEY MOVE\nThis week''s priority: {{objective}}\nMy commitment: {{action}}\nDeadline: {{deadline}}\nHow we''ll measure success: {{success_criteria}}\n\nOne action. One deadline. One measurable result.\n\nYou can see your checklist and update your progress anytime in your secure portal.\n\n[button:Open my Money Coach portal]({{portal_link}})\n\n{{coach_name}}\nMoney Coach\nOne Week. One Objective. One Money Move.'),
   ('reminder', 'Accountability reminder',
    'A quick check-in on your One Money Move',
    E'Hi {{first_name}},\n\nJust a friendly reminder about the One Money Move you committed to:\n\n{{action}}\nDeadline: {{deadline}}\n\n{{appointment}}\n\nHow is it going? Whether you''ve finished, made a start, or hit a snag, take a moment to update your progress. Every step counts, and we''ll talk it through together.\n\n[button:Update my progress]({{portal_link}})\n\n{{coach_name}}\nMoney Coach');

@@ -20,7 +20,9 @@ export type Client = {
 export type CurriculumWeek = {
   week_number: number;
   title: string;
+  theme: string;
   psychology_principle: string;
+  coaching_question: string;
   lesson: string;
   baby_step: string;
   baby_step_note: string;

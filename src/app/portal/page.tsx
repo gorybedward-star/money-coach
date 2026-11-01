@@ -107,6 +107,9 @@ export default async function PortalHome({ searchParams }: { searchParams: Promi
               </p>
             )}
             <p className="mt-4 font-medium">{focus.objective}</p>
+            {focus.coaching_question && (
+              <p className="mt-3 italic text-slate-600">Something to think about: &ldquo;{focus.coaching_question}&rdquo;</p>
+            )}
             <dl className="mt-6 grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl bg-ivory p-4">
                 <dt className="text-xs font-semibold uppercase tracking-wider text-slate-600">Money mindset</dt>
@@ -142,21 +145,33 @@ export default async function PortalHome({ searchParams }: { searchParams: Promi
             </div>
             {move ? (
               <>
-                <p className="mt-3 text-xl font-bold leading-snug">{move.action}</p>
-                <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
+                <dl className="mt-4 space-y-4">
+                  {move.objective && (
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wider text-slate-600">This week&rsquo;s priority</dt>
+                      <dd className="mt-1">{move.objective}</dd>
+                    </div>
+                  )}
                   <div>
-                    <dt className="text-slate-600">Deadline</dt>
-                    <dd className="font-semibold">{formatDate(move.deadline)}</dd>
+                    <dt className="text-xs font-semibold uppercase tracking-wider text-slate-600">My commitment</dt>
+                    <dd className="mt-1 text-xl font-bold leading-snug">{move.action}</dd>
                   </div>
                   <div>
-                    <dt className="text-slate-600">How we&rsquo;ll measure it</dt>
-                    <dd className="font-semibold">{move.success_criteria}</dd>
+                    <dt className="text-xs font-semibold uppercase tracking-wider text-slate-600">How we&rsquo;ll measure success</dt>
+                    <dd className="mt-1">{move.success_criteria}</dd>
                   </div>
-                  <div>
-                    <dt className="text-slate-600">Status</dt>
-                    <dd className="font-semibold">{commitmentStatusLabel[move.status]}</dd>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <dt className="text-slate-600">Deadline</dt>
+                      <dd className="font-semibold">{formatDate(move.deadline)}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-slate-600">Status</dt>
+                      <dd className="font-semibold">{commitmentStatusLabel[move.status]}</dd>
+                    </div>
                   </div>
                 </dl>
+                <p className="mt-4 text-sm font-semibold text-emerald">One action. One deadline. One measurable result.</p>
                 {move.coach_feedback && (
                   <p className="mt-4 rounded-xl bg-ivory px-4 py-3 text-sm">
                     <span className="font-semibold">Coach feedback:</span> {move.coach_feedback}
