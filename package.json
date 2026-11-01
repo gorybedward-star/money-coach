@@ -12,12 +12,15 @@
     "preview:build": "npx --yes esbuild@0.24.0 preview/entry.tsx --bundle --minify --format=iife --jsx=automatic --target=es2020 --tsconfig=tsconfig.json --alias:next/link=./preview/shims/link.tsx --alias:next/image=./preview/shims/image.tsx --alias:next/navigation=./preview/shims/navigation.ts --define:process.env.NODE_ENV='\"production\"' --banner:js='var process={env:{NEXT_PUBLIC_DISABLE_FORMS:\"1\"}};' --outfile=preview/out/app.js && python3 preview/build.py"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.66.0",
     "next": "15.5.28",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "server-only": "^0.0.1",
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {

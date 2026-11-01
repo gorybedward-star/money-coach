@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { ChromeGate } from "@/components/layout/chrome-gate";
 import { site } from "@/config/site";
 import "./globals.css";
 
@@ -30,9 +31,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
       <body className="min-h-dvh">
-        <SiteHeader />
+        <ChromeGate>
+          <SiteHeader />
+        </ChromeGate>
         <main id="main">{children}</main>
-        <SiteFooter />
+        <ChromeGate>
+          <SiteFooter />
+        </ChromeGate>
       </body>
     </html>
   );

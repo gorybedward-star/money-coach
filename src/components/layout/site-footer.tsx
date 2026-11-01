@@ -26,7 +26,7 @@ export function SiteFooter() {
           <FooterCol title="Free tools" links={toolLinks} />
           <FooterCol
             title="Company"
-            links={[{ href: "/get-started", label: "Get Started" }, { href: "/get-started#contact", label: "Contact" }, ...legalNav]}
+            links={[{ href: "/get-started", label: "Get Started" }, { href: "/get-started#contact", label: "Contact" }, { href: "/login", label: "Client login" }, ...legalNav]}
           />
         </div>
 
