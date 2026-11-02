@@ -4,10 +4,12 @@ import { Logo } from "./logo";
 
 const toolLinks = [
   { href: "/tools/scorecard", label: "Family Money Scorecard" },
+  { href: "/tools/net-worth", label: "Family Net Worth Tracker" },
   { href: "/tools/budget", label: "Family Budget Builder" },
-  { href: "/tools/pay-yourself-first", label: "Pay Yourself First Calculator" },
+  { href: "/tools/emergency-fund", label: "Emergency Fund Calculator" },
+  { href: "/tools/debt-payoff", label: "Debt Payoff Calculator" },
   { href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator" },
-  { href: "/employee-benefits#checklist", label: "Employee Benefits Checklist" },
+  { href: "/tools", label: "All tools, by roadmap stage" },
   { href: "/federal-employees/tsp-checkup", label: "Free TSP Checkup" },
   { href: "/federal-employees/calculators/agency-match", label: "TSP Agency Match Calculator" },
 ];
