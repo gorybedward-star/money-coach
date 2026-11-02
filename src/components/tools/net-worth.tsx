@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   AlertTriangle, ArrowRight, Building2, Car, CheckCircle2, ChevronDown, CreditCard, Flag, Home, Info, Landmark, LineChart, Plus,
-  Lock, RotateCcw, Save, Sparkles, Trophy, Trash2, TrendingDown, TrendingUp, Wallet, type LucideIcon,
+  FileDown, Lock, RotateCcw, Save, Sparkles, Trophy, Trash2, TrendingDown, TrendingUp, Wallet, type LucideIcon,
 } from "lucide-react";
 import {
   ASSET_GROUPS, DEBT_GROUPS, EXAMPLE_ESSENTIALS, HIGH_INTEREST_APR, WEALTH_LEVELS, addSnapshot, blankSheet, exampleSheet, isHighInterest, newLine,
@@ -15,6 +15,7 @@ import { formatCompactUSD, formatUSD } from "@/lib/calculators";
 import { inputClass } from "@/components/ui/input";
 import { PrintButton } from "./fields";
 import { cn } from "@/lib/utils";
+import { sendLead } from "@/lib/send-lead";
 
 const KEY = "mc-networth-v1";
 const BUDGET_KEY = "mc-budget-v1";
@@ -537,6 +538,18 @@ function WealthLevelCard({ netWorth, history, isExample }: { netWorth: number; h
         )}
       </div>
 
+      {L.guide && (
+        <a href={L.guide.href} download className="no-print mt-3 flex items-center gap-3 rounded-xl border border-emerald/30 bg-emerald-50 p-3 hover:border-emerald">
+          <FileDown className="size-6 shrink-0 text-emerald" aria-hidden />
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold text-navy">Free guide: {L.guide.title}</span>
+            <span className="block text-xs text-slate-600">{L.guide.pages}-page PDF for this level · No email required</span>
+          </span>
+          <span className="text-sm font-semibold text-emerald">Download</span>
+        </a>
+      )}
+      {L.guide && !isExample && <GuideSignup level={L.n} />}
+
       <div className="mt-3 flex flex-wrap items-center gap-1.5 text-xs">
         {st.completed.map((c) => (
           <span key={c.n} className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 font-semibold text-emerald-700">
@@ -550,5 +563,38 @@ function WealthLevelCard({ netWorth, history, isExample }: { netWorth: number; h
         )}
       </div>
     </div>
+  );
+}
+
+/** Optional: get the next level's guide by email. The download above never requires this. */
+function GuideSignup({ level }: { level: number }) {
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [error, setError] = useState("");
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setState("error"); setError("Please enter a valid email."); return; }
+    setState("sending");
+    try {
+      const res = await sendLead({ type: "guide", email: email.trim(), marketingConsent: true, context: { "Wealth level": String(level), Source: "Net Worth Tracker" } });
+      if (res.ok) setState("done");
+      else { setState("error"); setError(res.error); }
+    } catch {
+      setState("error"); setError("We couldn't send that right now. Please try again.");
+    }
+  };
+  if (state === "done") {
+    return <p className="no-print mt-2 flex items-center gap-1.5 text-xs font-semibold text-emerald"><CheckCircle2 className="size-4" aria-hidden /> You&rsquo;re on the list. We&rsquo;ll email you the next level&rsquo;s guide when it&rsquo;s ready.</p>;
+  }
+  return (
+    <form onSubmit={submit} className="no-print mt-2">
+      <label htmlFor="guide-email" className="text-xs text-slate-600">Optional: email me the next level&rsquo;s guide when it&rsquo;s ready.</label>
+      <div className="mt-1 flex gap-2">
+        <input id="guide-email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className={cn(inputClass, "h-10 min-w-0 flex-1 text-sm")} />
+        <button type="submit" disabled={state === "sending"} className="shrink-0 rounded-full bg-navy px-4 text-xs font-semibold text-ivory hover:bg-navy-800 disabled:opacity-60">{state === "sending" ? "Sending…" : "Notify me"}</button>
+      </div>
+      {state === "error" && <p role="alert" className="mt-1 text-xs text-red-700">{error}</p>}
+      <p className="mt-1 text-[11px] text-slate-600">Only your email is sent, never your numbers. Unsubscribe anytime.</p>
+    </form>
   );
 }
