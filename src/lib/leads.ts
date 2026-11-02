@@ -1,6 +1,6 @@
 /** Shared lead payload types and validation (used by forms and the API route). */
 
-export type LeadType = "roadmap" | "scorecard" | "tsp-checkup" | "benefits-checklist" | "contact" | "newsletter";
+export type LeadType = "roadmap" | "scorecard" | "tsp-checkup" | "benefits-checklist" | "contact" | "newsletter" | "guide";
 
 export type LeadPayload = {
   type: LeadType;
@@ -18,7 +18,7 @@ export type LeadPayload = {
 export type LeadResponse = { ok: true; delivered: boolean } | { ok: false; error: string };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const TYPES: LeadType[] = ["roadmap", "scorecard", "tsp-checkup", "benefits-checklist", "contact", "newsletter"];
+const TYPES: LeadType[] = ["roadmap", "scorecard", "tsp-checkup", "benefits-checklist", "contact", "newsletter", "guide"];
 
 export function validateLead(input: unknown): { lead?: LeadPayload; error?: string } {
   if (!input || typeof input !== "object") return { error: "Invalid request." };

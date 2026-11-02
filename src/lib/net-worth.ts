@@ -36,11 +36,13 @@ export type NextStep = { stage: number; title: string; detail: string; href: str
  * Wealth levels. A client only sees the level they are working on now, so someone focused on their first
  * $100K is never shown a $500K or $1M tracker. Levels unlock one at a time.
  */
-export type WealthLevel = { n: number; name: string; start: number; goal: number; tagline: string };
+export type WealthLevel = { n: number; name: string; start: number; goal: number; tagline: string; guide?: { href: string; title: string; pages: number } };
+
+const FIRST_100K_GUIDE = { href: "/guides/your-first-100k.pdf", title: "Your First $100,000", pages: 5 };
 
 export const WEALTH_LEVELS: WealthLevel[] = [
-  { n: 0, name: "The Starting Line", start: -Infinity, goal: 0, tagline: "Own more than you owe. Every dollar of debt paid moves you forward." },
-  { n: 1, name: "First $100K", start: 0, goal: 100_000, tagline: "The hardest one. After this, compound growth starts doing real work for you." },
+  { n: 0, name: "The Starting Line", start: -Infinity, goal: 0, tagline: "Own more than you owe. Every dollar of debt paid moves you forward.", guide: FIRST_100K_GUIDE },
+  { n: 1, name: "First $100K", start: 0, goal: 100_000, tagline: "The hardest one. After this, compound growth starts doing real work for you.", guide: FIRST_100K_GUIDE },
   { n: 2, name: "Half a Million", start: 100_000, goal: 500_000, tagline: "Your money is working as hard as you are. Stay consistent and protect it." },
   { n: 3, name: "Millionaire", start: 500_000, goal: 1_000_000, tagline: "Seven figures. Keep investing, keep it protected, and plan your legacy." },
   { n: 4, name: "Legacy Builder", start: 1_000_000, goal: 5_000_000, tagline: "Building wealth that can outlast you. Estate planning matters most here." },

@@ -10,6 +10,7 @@ const LABELS: Record<LeadPayload["type"], string> = {
   "benefits-checklist": "Benefits Checklist request",
   contact: "Service request / question",
   newsletter: "Newsletter signup",
+  guide: "Free guide series signup",
 };
 
 /**
