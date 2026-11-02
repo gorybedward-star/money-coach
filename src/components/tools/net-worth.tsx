@@ -4,11 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   AlertTriangle, ArrowRight, Building2, Car, CheckCircle2, ChevronDown, CreditCard, Flag, Home, Info, Landmark, LineChart, Plus,
-  RotateCcw, Save, Sparkles, Trash2, TrendingDown, TrendingUp, Wallet, type LucideIcon,
+  Lock, RotateCcw, Save, Sparkles, Trophy, Trash2, TrendingDown, TrendingUp, Wallet, type LucideIcon,
 } from "lucide-react";
 import {
-  ASSET_GROUPS, DEBT_GROUPS, EXAMPLE_ESSENTIALS, HIGH_INTEREST_APR, MILESTONES, addSnapshot, blankSheet, exampleSheet, isHighInterest, newLine,
-  nextMilestone, nextRoadmapStep, summarize, type DebtGroupId, type GroupId, type Line, type Sheet, type Snapshot,
+  ASSET_GROUPS, DEBT_GROUPS, EXAMPLE_ESSENTIALS, HIGH_INTEREST_APR, WEALTH_LEVELS, addSnapshot, blankSheet, exampleSheet, isHighInterest, newLine,
+  nextRoadmapStep, projectArrival, wealthLevel, summarize, type DebtGroupId, type GroupId, type Line, type Sheet, type Snapshot,
 } from "@/lib/net-worth";
 import { summarize as summarizeBudget, type Budget } from "@/lib/budget";
 import { formatCompactUSD, formatUSD } from "@/lib/calculators";
@@ -90,7 +90,6 @@ export function NetWorthTool() {
 
   const s = useMemo(() => summarize(sheet, Number(essentials) || 0), [sheet, essentials]);
   const step = useMemo(() => nextRoadmapStep(s), [s]);
-  const ms = nextMilestone(s.netWorth);
 
   const touch = () => setIsExample(false);
   const edit = (g: GroupId, id: string, patch: Partial<Line>) => {
@@ -196,6 +195,8 @@ export function NetWorthTool() {
             <OwnOweBars s={s} />
           </div>
 
+          <WealthLevelCard netWorth={s.netWorth} history={history} isExample={isExample} />
+
           <div className="rounded-[var(--radius-card)] border-2 border-gold/60 bg-gold-50 p-5">
             <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gold-600">
               <Flag className="size-4" aria-hidden /> Your next move · Roadmap stage {step.stage}
@@ -212,30 +213,6 @@ export function NetWorthTool() {
             <Tile label="High-interest debt" value={formatCompactUSD(s.highInterest)} sub={`${HIGH_INTEREST_APR}%+ APR`} tone={s.highInterest > 0 ? "watch" : "good"} />
             <Tile label="Assets that can grow" value={`${s.growingPct.toFixed(0)}%`} sub="investments + property" tone={s.growingPct >= 50 ? "good" : "info"} />
             <Tile label="Without home and cars" value={(s.financialNetWorth < 0 ? "−" : "") + formatCompactUSD(Math.abs(s.financialNetWorth))} sub="financial net worth" tone={s.financialNetWorth >= 0 ? "good" : "watch"} />
-          </div>
-
-          <div className="rounded-[var(--radius-card)] border border-navy/10 bg-white p-5 shadow-soft">
-            <p className="text-sm font-semibold">Next milestone</p>
-            {ms.next === null ? (
-              <p className="mt-2 text-sm text-slate-600">You&rsquo;ve passed every milestone on our ladder. Keep protecting and growing what you&rsquo;ve built.</p>
-            ) : (
-              <>
-                <div className="mt-2 flex items-baseline justify-between gap-3">
-                  <p className="font-display text-2xl font-bold">{ms.next === 0 ? "Back to $0" : formatCompactUSD(ms.next)}</p>
-                  <p className="text-sm tabular-nums text-slate-600">{formatUSD(ms.next - s.netWorth)} to go</p>
-                </div>
-                <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-ivory-200" role="progressbar" aria-valuenow={Math.round(ms.progress * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Progress to next milestone">
-                  <div className="h-full rounded-full bg-gradient-to-r from-emerald to-gold transition-all duration-500" style={{ width: `${ms.progress * 100}%` }} />
-                </div>
-                <ol className="mt-3 flex flex-wrap gap-1.5" aria-label="Milestone ladder">
-                  {MILESTONES.map((m) => (
-                    <li key={m} className={cn("rounded-full px-2.5 py-0.5 text-xs font-semibold tabular-nums", s.netWorth >= m ? "bg-emerald text-white" : "bg-ivory-200 text-slate-600")}>
-                      {m === 0 ? "$0" : formatCompactUSD(m)}
-                    </li>
-                  ))}
-                </ol>
-              </>
-            )}
           </div>
 
           <ProgressTracker history={history} isExample={isExample} onSave={saveSnapshot} onStart={startBlank} justSaved={justSaved}
@@ -490,5 +467,88 @@ function Sparkline({ history }: { history: Snapshot[] }) {
         {history.length > 1 && <span>{shortDate(history.at(-1)!.date)}</span>}
       </figcaption>
     </figure>
+  );
+}
+
+const goalLabel = (n: number) => (n >= 1_000_000 ? `$${n / 1_000_000}M` : n >= 1_000 ? `$${Math.round(n / 1_000)}K` : formatUSD(n));
+
+function WealthLevelCard({ netWorth, history, isExample }: { netWorth: number; history: Snapshot[]; isExample: boolean }) {
+  const low = Math.min(netWorth, ...history.map((h) => h.netWorth));
+  const st = wealthLevel(netWorth, low);
+  const totalLevels = WEALTH_LEVELS.length - 1;
+
+  if (!st.level) {
+    return (
+      <div className="rounded-[var(--radius-card)] border-2 border-gold bg-white p-5 shadow-soft">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gold-600"><Trophy className="size-4" aria-hidden /> All {totalLevels} wealth levels complete</p>
+        <p className="mt-2 font-display text-2xl font-bold">Legacy achieved</p>
+        <p className="mt-1 text-sm leading-relaxed text-slate-600">Protect it, plan your estate with licensed professionals, and pass on the habits that built it.</p>
+      </div>
+    );
+  }
+
+  const L = st.level;
+  const pct = Math.round(st.progress * 100);
+  const arrival = L.n > 0 || netWorth < 0 ? projectArrival(history, L.goal) : null;
+  const R = 34, C = 2 * Math.PI * R;
+  const next = WEALTH_LEVELS[L.n + 1];
+
+  return (
+    <div className="rounded-[var(--radius-card)] border-2 border-gold/60 bg-white p-5 shadow-soft">
+      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gold-600">
+        <Trophy className="size-4" aria-hidden /> {L.n === 0 ? "Your wealth tracker" : `Wealth level ${L.n} of ${totalLevels}`}
+      </p>
+      <div className="mt-3 flex items-center gap-4">
+        <svg viewBox="0 0 80 80" className="size-20 shrink-0 -rotate-90" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${pct}% of the way to ${goalLabel(L.goal)}`}>
+          <circle cx="40" cy="40" r={R} fill="none" stroke="#F2EEE2" strokeWidth="8" />
+          <circle cx="40" cy="40" r={R} fill="none" stroke="url(#lvl-grad)" strokeWidth="8" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C * (1 - st.progress)} className="transition-all duration-700" />
+          <defs><linearGradient id="lvl-grad"><stop offset="0%" stopColor="#167D68" /><stop offset="100%" stopColor="#C9A45C" /></linearGradient></defs>
+          <text x="40" y="40" transform="rotate(90 40 40)" textAnchor="middle" dominantBaseline="central" className="fill-navy font-display text-[17px] font-bold">{pct}%</text>
+        </svg>
+        <div className="min-w-0">
+          <p className="font-display text-2xl font-bold leading-tight">{L.n === 0 ? "Get to $0" : `Goal: ${goalLabel(L.goal)}`}</p>
+          <p className="text-sm font-semibold text-emerald">{L.name}</p>
+          <p className="mt-0.5 text-sm tabular-nums text-slate-600">{formatUSD(st.toGo)} to go</p>
+        </div>
+      </div>
+      <p className="mt-3 text-sm leading-relaxed text-slate-600">{L.tagline}</p>
+
+      {st.checkpoints.length > 0 && (
+        <ol className="mt-3 grid grid-cols-4 gap-1.5 text-center" aria-label="Checkpoints in this level">
+          {st.checkpoints.map((c) => (
+            <li key={c.value} className={cn("rounded-full py-1 text-xs font-semibold tabular-nums", c.reached ? "bg-emerald text-white" : "bg-ivory-200 text-slate-600")}>
+              {goalLabel(c.value)}
+            </li>
+          ))}
+          <li className="rounded-full bg-gold-50 py-1 text-xs font-bold tabular-nums text-gold-600 ring-1 ring-gold/50">{goalLabel(L.goal)}</li>
+        </ol>
+      )}
+
+      <div className="mt-3 rounded-xl bg-ivory-200 p-3 text-sm">
+        {arrival?.date && arrival.months !== null ? (
+          <p>
+            At your pace{isExample ? " (sample)" : ""} of <strong className="tabular-nums">+{formatUSD(arrival.perMonth)}/month</strong>, you&rsquo;d reach {goalLabel(L.goal)} around{" "}
+            <strong>{arrival.date.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</strong>. Raise your monthly progress to get there faster.
+          </p>
+        ) : arrival && arrival.months === null ? (
+          <p>Your snapshots show net worth flat or down lately. One extra debt payment or savings transfer a month gets the line moving up again.</p>
+        ) : (
+          <p>Save a snapshot each month. After a few weeks we&rsquo;ll estimate when you&rsquo;ll reach {goalLabel(L.goal)} at your pace.</p>
+        )}
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-1.5 text-xs">
+        {st.completed.map((c) => (
+          <span key={c.n} className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 font-semibold text-emerald-700">
+            <CheckCircle2 className="size-3.5" aria-hidden /> {goalLabel(c.goal)}
+          </span>
+        ))}
+        {next && (
+          <span className="inline-flex items-center gap-1 rounded-full border border-dashed border-navy/20 px-2.5 py-1 text-slate-600">
+            <Lock className="size-3.5" aria-hidden /> Level {next.n} unlocks at {goalLabel(L.goal)}
+          </span>
+        )}
+      </div>
+    </div>
   );
 }

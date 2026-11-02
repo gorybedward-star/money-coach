@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { summarize, nextRoadmapStep, nextMilestone, addSnapshot, isHighInterest, exampleSheet, blankSheet, newLine, EXAMPLE_ESSENTIALS } from "../src/lib/net-worth.ts";
+import { summarize, nextRoadmapStep, wealthLevel, projectArrival, addSnapshot, isHighInterest, exampleSheet, blankSheet, newLine, EXAMPLE_ESSENTIALS } from "../src/lib/net-worth.ts";
 
 test("example family totals", () => {
   const s = summarize(exampleSheet(), Number(EXAMPLE_ESSENTIALS));
@@ -51,12 +51,35 @@ test("high-interest classification", () => {
   assert.equal(isHighInterest("mortgage", newLine("Mortgage", "100", "6.5")), false);
 });
 
-test("milestones", () => {
-  assert.deepEqual(nextMilestone(63_700).next, 100_000);
-  assert.ok(Math.abs(nextMilestone(75_000).progress - 0.5) < 1e-9);
-  assert.equal(nextMilestone(-5_000).next, 0);
-  assert.equal(nextMilestone(-5_000).progress, 0);
-  assert.equal(nextMilestone(2_000_000).next, null);
+test("wealth levels show only the current goal", () => {
+  assert.equal(wealthLevel(63_700).level!.goal, 100_000);
+  assert.ok(Math.abs(wealthLevel(63_700).progress - 0.637) < 1e-9);
+  assert.deepEqual(wealthLevel(63_700).checkpoints.map((c) => c.reached), [true, true, false]);
+  assert.equal(wealthLevel(100_000).level!.goal, 500_000);
+  assert.deepEqual(wealthLevel(100_000).checkpoints.map((c) => c.value), [200_000, 300_000, 400_000]);
+  assert.equal(wealthLevel(100_000).completed.length, 1);
+  assert.equal(wealthLevel(750_000).level!.name, "Millionaire");
+  assert.equal(wealthLevel(1_200_000).level!.goal, 5_000_000);
+  assert.equal(wealthLevel(5_000_000).level, null);
+});
+
+test("starting line measures from the lowest point", () => {
+  const st = wealthLevel(-5_000, -20_000);
+  assert.equal(st.level!.n, 0);
+  assert.equal(st.level!.goal, 0);
+  assert.ok(Math.abs(st.progress - 0.75) < 1e-9);
+});
+
+test("arrival projection uses snapshot pace", () => {
+  const h = [
+    { date: "2026-01-01T00:00:00Z", assets: 0, debts: 0, netWorth: 40_000 },
+    { date: "2026-07-02T00:00:00Z", assets: 0, debts: 0, netWorth: 52_000 },
+  ];
+  const p = projectArrival(h, 100_000, new Date("2026-07-02T00:00:00Z"))!;
+  assert.ok(p.perMonth > 1_950 && p.perMonth < 2_050);
+  assert.ok(p.months! > 23 && p.months! < 25);
+  assert.equal(projectArrival(h.slice(0, 1), 100_000), null);
+  assert.equal(projectArrival([h[1], { ...h[1], date: "2026-08-02T00:00:00Z", netWorth: 50_000 }], 100_000)!.months, null);
 });
 
 test("snapshots keep one per day, sorted, capped", () => {

@@ -32,18 +32,67 @@ export function isHighInterest(group: DebtGroupId, line: Line) {
 export type Check = { tone: "good" | "watch" | "info"; title: string; detail: string; href?: string; cta?: string };
 export type NextStep = { stage: number; title: string; detail: string; href: string; cta: string };
 
-export const MILESTONES = [0, 10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1_000_000];
+/**
+ * Wealth levels. A client only sees the level they are working on now, so someone focused on their first
+ * $100K is never shown a $500K or $1M tracker. Levels unlock one at a time.
+ */
+export type WealthLevel = { n: number; name: string; start: number; goal: number; tagline: string };
 
-/** The next net worth milestone above `nw`, and progress toward it from the previous one (0-1). */
-export function nextMilestone(nw: number) {
-  const next = MILESTONES.find((m) => m > nw);
-  if (next === undefined) return { next: null, prev: MILESTONES.at(-1)!, progress: 1 };
-  const i = MILESTONES.indexOf(next);
-  // Below zero, the first goal is getting back to $0. Measure from the starting point the debt represents.
-  const prev = i === 0 ? Math.min(nw, 0) : MILESTONES[i - 1];
-  const span = next - prev;
-  const progress = span > 0 ? Math.max(0, Math.min(1, (nw - prev) / span)) : 0;
-  return { next, prev, progress };
+export const WEALTH_LEVELS: WealthLevel[] = [
+  { n: 0, name: "The Starting Line", start: -Infinity, goal: 0, tagline: "Own more than you owe. Every dollar of debt paid moves you forward." },
+  { n: 1, name: "First $100K", start: 0, goal: 100_000, tagline: "The hardest one. After this, compound growth starts doing real work for you." },
+  { n: 2, name: "Half a Million", start: 100_000, goal: 500_000, tagline: "Your money is working as hard as you are. Stay consistent and protect it." },
+  { n: 3, name: "Millionaire", start: 500_000, goal: 1_000_000, tagline: "Seven figures. Keep investing, keep it protected, and plan your legacy." },
+  { n: 4, name: "Legacy Builder", start: 1_000_000, goal: 5_000_000, tagline: "Building wealth that can outlast you. Estate planning matters most here." },
+];
+
+export type LevelStatus = {
+  level: WealthLevel | null; // null once every level is complete
+  completed: WealthLevel[];
+  progress: number; // 0-1 within the current level
+  toGo: number;
+  checkpoints: { value: number; reached: boolean }[];
+  /** For the starting line, progress is measured from the deepest point recorded. */
+  from: number;
+};
+
+/** The client's current wealth level. `low` is the lowest net worth on record (used only for the starting line). */
+export function wealthLevel(nw: number, low = nw): LevelStatus {
+  const idx = WEALTH_LEVELS.findIndex((l) => nw < l.goal);
+  if (idx === -1) {
+    return { level: null, completed: WEALTH_LEVELS.slice(1), progress: 1, toGo: 0, checkpoints: [], from: WEALTH_LEVELS.at(-1)!.goal };
+  }
+  const level = WEALTH_LEVELS[idx];
+  const from = level.n === 0 ? Math.min(low, nw) : level.start;
+  const span = level.goal - from;
+  const progress = span > 0 ? Math.max(0, Math.min(1, (nw - from) / span)) : 0;
+  const checkpoints = level.n === 0
+    ? []
+    : [0.25, 0.5, 0.75].map((f) => {
+        const value = level.start + (level.goal - level.start) * f;
+        return { value, reached: nw >= value };
+      });
+  const completed = WEALTH_LEVELS.slice(1, idx);
+  return { level, completed, progress, toGo: level.goal - nw, checkpoints, from };
+}
+
+/**
+ * Projects when the current goal is reached at the pace shown by saved snapshots (straight-line, first to last).
+ * Needs at least two snapshots 3+ weeks apart and an upward trend. Not a forecast of investment returns.
+ */
+export function projectArrival(history: Snapshot[], goal: number, now = new Date()) {
+  if (history.length < 2) return null;
+  const first = history[0];
+  const last = history.at(-1)!;
+  const days = (Date.parse(last.date) - Date.parse(first.date)) / 86_400_000;
+  if (!(days >= 21)) return null;
+  const perMonth = ((last.netWorth - first.netWorth) / days) * 30.44;
+  if (perMonth <= 0) return { perMonth, months: null, date: null };
+  const remaining = goal - last.netWorth;
+  if (remaining <= 0) return { perMonth, months: 0, date: now };
+  const months = remaining / perMonth;
+  const date = new Date(now.getTime() + months * 30.44 * 86_400_000);
+  return { perMonth, months, date };
 }
 
 const usd = (n: number) => Math.round(n).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
