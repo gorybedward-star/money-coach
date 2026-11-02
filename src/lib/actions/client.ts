@@ -41,6 +41,7 @@ export async function submitIntake(_prev: ClientActionState, fd: FormData): Prom
     debt_notes: optStr(fd, "debt_notes"),
     retirement_overview: optStr(fd, "retirement_overview"),
     employee_benefits: optStr(fd, "employee_benefits"),
+    insurance_coverage: optStr(fd, "insurance_coverage"),
     consent_privacy: true,
     consent_coaching_comms: true,
     ...numbers,

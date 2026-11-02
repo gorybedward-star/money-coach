@@ -36,7 +36,9 @@ export function SiteFooter() {
             coaching. We are not a registered investment adviser, broker-dealer, insurance agency, financial planner,
             attorney, CPA, or fiduciary, and nothing on this site is individualized investment, insurance, legal, or tax
             advice. Calculators show hypothetical illustrations, not guarantees. Investing involves risk, including loss
-            of principal. Consult a qualified, licensed professional about your situation.{" "}
+            of principal. Insurance, securities, annuities, and other financial products are regulated by each state, and many
+            also by federal agencies; we do not sell, solicit, or recommend them. Consult a qualified, licensed professional
+            about your situation.{" "}
             <Link href="/disclaimer" className="underline underline-offset-2 hover:text-ivory">
               Read the full disclaimer
             </Link>

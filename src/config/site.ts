@@ -91,6 +91,7 @@ export const offers: Offer[] = [
       "60-minute one-on-one coaching session",
       "Cash flow and pay-yourself-first review",
       "Debt and emergency fund priorities",
+      "Insurance protection check: life, disability, and health",
       "Personalized educational action checklist",
     ],
     bestFor: "Families who feel stuck or overwhelmed",
@@ -107,7 +108,8 @@ export const offers: Offer[] = [
       "Most working families leave value on the table at work. We walk through your benefits together and map out the questions worth asking.",
     includes: [
       "Guided review of your employer benefits",
-      "Retirement match, vesting, and insurance walkthrough",
+      "Retirement match, vesting, and workplace insurance walkthrough",
+      "Protection gap check: life, disability, and health coverage",
       "HSA, FSA, and other overlooked benefits",
       "Benefits Opportunity Report with questions for HR",
     ],
@@ -115,24 +117,6 @@ export const offers: Offer[] = [
     featured: true,
     ctaLabel: "Request a Benefits Checkup",
     href: "/get-started?service=benefits",
-  },
-  {
-    id: "roadmap",
-    name: "Family Wealth Roadmap",
-    price: 299,
-    cadence: "one-time",
-    deliverable: "Comprehensive review and 90-day educational plan",
-    description:
-      "A deeper look at your household across all six pillars, with a practical 90-day plan you can actually follow.",
-    includes: [
-      "Comprehensive review across all six pillars",
-      "Includes a Benefits Checkup",
-      "Debt payoff and savings strategy education",
-      "90-day educational action plan",
-    ],
-    bestFor: "Families ready for a complete game plan",
-    ctaLabel: "Request a Wealth Roadmap",
-    href: "/get-started?service=roadmap",
   },
   {
     id: "reset",
@@ -146,6 +130,7 @@ export const offers: Offer[] = [
       "Seven 50-minute one-on-one coaching sessions",
       "Your own private client portal with weekly checklists",
       "A clear One Money Move every week, with reminders",
+      "Insurance protection review: life, disability, health, and beneficiaries",
       "Graduation scorecard, 90-day plan, and 12-month roadmap",
     ],
     bestFor: "Families ready to change their money habits for good",
@@ -163,6 +148,7 @@ export const offers: Offer[] = [
     includes: [
       "Monthly coaching session",
       "Accountability on your action plan",
+      "Yearly insurance and beneficiary review",
       "Ongoing education and resources",
       "Cancel anytime",
     ],

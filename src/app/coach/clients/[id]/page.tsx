@@ -138,6 +138,7 @@ export default async function ClientProfile({ params }: { params: Promise<{ id: 
                 <Field label="Retirement" value={intake.retirement_overview} />
                 <Field label="Contribution rate" value={intake.retirement_contribution_pct != null ? `${intake.retirement_contribution_pct}%` : null} />
                 <Field label="Work benefits" value={intake.employee_benefits} wide />
+                <Field label="Insurance protection" value={intake.insurance_coverage} wide />
                 <p className="text-xs text-slate-600 sm:col-span-2">
                   Submitted {new Date(intake.submitted_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · consent to
                   privacy notice and coaching emails recorded. All figures are self-reported.

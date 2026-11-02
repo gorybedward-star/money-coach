@@ -16,6 +16,7 @@ export function Disclosure({ children, className }: { children?: ReactNode; clas
         {children ?? (
           <>
             For general education only, not individualized financial, investment, insurance, legal, or tax advice.
+            Financial and insurance products are regulated by each state; consult licensed professionals before acting.
             Results are hypothetical and not guaranteed.{" "}
           </>
         )}{" "}

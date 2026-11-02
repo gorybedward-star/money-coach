@@ -8,7 +8,7 @@ export function PricingCards({ ids }: { ids?: string[] }) {
   // The 7-Week Money Reset is a program with its own page and banner, not a card.
   const list = ids ? offers.filter((o) => ids.includes(o.id)) : offers.filter((o) => o.id !== "reset");
   return (
-    <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+    <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
       {list.map((o) => (
         <li key={o.id} className={cn(o.featured && "md:col-span-2 xl:col-span-1 xl:-my-4")}>
           <PricingCard offer={o} />

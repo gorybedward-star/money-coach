@@ -302,8 +302,11 @@ export default function MoneyResetPage() {
           ))}
         </div>
         <Disclosure className="mt-10">
-          Financial education and coaching only, not individualized investment, tax, or legal advice. We don&rsquo;t recommend specific
-          securities or manage money. Results depend on your circumstances and are not guaranteed. Money Coach is independent and is
+          Financial education and coaching only, not individualized investment, insurance, tax, or legal advice. Insurance, securities,
+          annuities, and other financial products are regulated by each state, and many also by federal agencies. We don&rsquo;t sell,
+          solicit, or recommend specific insurance policies or securities, and we don&rsquo;t manage money. Insurance reviews in this
+          program are educational; consult a licensed insurance agent, financial professional, attorney, or tax advisor before buying a
+          product or making a decision. Results depend on your circumstances and are not guaranteed. Money Coach is independent and is
           not affiliated with or endorsed by Morgan Housel, Dave Ramsey, or Ramsey Solutions. The Psychology of Money and the Baby Steps
           are referenced for educational purposes.
         </Disclosure>
