@@ -25,9 +25,10 @@ export const roadmapStages: RoadmapStage[] = [
       "Set up an automatic savings transfer",
     ],
     tools: [
+      { href: "/tools/scorecard", label: "Family Money Scorecard", available: true },
+      { href: "/tools/net-worth", label: "Family Net Worth Tracker", available: true },
       { href: "/tools/budget", label: "Family Budget Builder", available: true },
       { href: "/tools/pay-yourself-first", label: "Pay Yourself First Calculator", available: true },
-      { href: "/tools/scorecard", label: "Family Money Scorecard", available: true },
     ],
   },
   {
@@ -93,8 +94,9 @@ export const roadmapStages: RoadmapStage[] = [
       "Set an automatic annual contribution increase",
     ],
     tools: [
-      { href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator", available: true },
       { href: "/tools/employer-match", label: "Employer Match Calculator", available: true },
+      { href: "/tools/cost-of-waiting", label: "Cost of Waiting Calculator", available: true },
+      { href: "/tools/compound-growth", label: "Compound Growth Calculator", available: true },
     ],
   },
   {
@@ -110,6 +112,9 @@ export const roadmapStages: RoadmapStage[] = [
       "Explore homeownership, rental property, or business ownership",
       "Consider consulting a licensed estate planning attorney",
     ],
-    tools: [{ href: "/learn", label: "Learn library", available: true }],
+    tools: [
+      { href: "/tools/net-worth", label: "Track Your Net Worth", available: true },
+      { href: "/learn", label: "Learn library", available: true },
+    ],
   },
 ];
