@@ -3,6 +3,7 @@ import { Fraunces, Inter } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { ChromeGate } from "@/components/layout/chrome-gate";
+import { BookCallBand } from "@/components/book-call-band";
 import { site } from "@/config/site";
 import "./globals.css";
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </ChromeGate>
         <main id="main">{children}</main>
         <ChromeGate>
+          <BookCallBand />
           <SiteFooter />
         </ChromeGate>
       </body>

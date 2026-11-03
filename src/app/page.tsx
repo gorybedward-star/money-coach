@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, CheckCircle2, ClipboardCheck, Quote } from "lucide-react";
+import { ArrowRight, BadgeCheck, CheckCircle2, ClipboardCheck, Quote, XCircle } from "lucide-react";
 import { getOffer, site } from "@/config/site";
 import { ButtonLink } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,22 @@ import { Disclosure } from "@/components/disclosure";
 import { articles } from "@/content/articles";
 import { tools } from "@/content/tools";
 import { scorecardQuestions } from "@/content/scorecard";
+import { founderStory } from "@/content/founder-story";
+import { Testimonials } from "@/components/testimonials";
+
+const forYou = [
+  "You earn a steady paycheck, but it never seems to stretch far enough.",
+  "You didn't grow up learning about money, and nobody has explained it since.",
+  "Credit card or other high-interest debt is holding you back, and you want a real plan.",
+  "You have workplace benefits like a 401(k), TSP, or insurance and aren't sure you're using them well.",
+  "You want to start investing but don't know where to begin.",
+  "You want to protect your family and build something to pass on.",
+];
+
+const notForYou = [
+  "Get-rich-quick tips or hot stock picks",
+  "Someone to manage your money or sell you products",
+];
 
 const benefitHighlights = [
   "Retirement match and vesting",
@@ -30,6 +46,7 @@ const benefitHighlights = [
 
 export default function HomePage() {
   const checkup = getOffer("benefits")!;
+  const reset = getOffer("reset")!;
   const featuredArticles = ["pay-yourself-first", "cost-of-waiting", "employee-benefits-you-may-be-missing"]
     .map((s) => articles.find((a) => a.slug === s)!)
     .filter(Boolean);
@@ -83,24 +100,14 @@ export default function HomePage() {
           <Reveal delay={100}>
             <Eyebrow light>Meet your coach</Eyebrow>
             <h2 className="mt-4 text-3xl font-bold leading-tight text-ivory sm:text-5xl">
-              Hi, I&rsquo;m Gory. Navy veteran, long-term investor, and your money coach.
+              Hi, I&rsquo;m Gory. Here&rsquo;s why I do this.
             </h2>
             <div className="mt-8 space-y-5 text-lg leading-relaxed text-ivory/85">
               <Quote className="size-8 text-gold" aria-hidden />
-              <p>
-                I started investing in stocks at 18. Over the years, I&rsquo;ve built a net worth of approximately $500,000,
-                achieved an 800 credit score, invested in rental properties, and established life insurance protection for
-                my family.
-              </p>
-              <p>
-                What I&rsquo;ve learned is that building wealth isn&rsquo;t about chasing the next big thing. It&rsquo;s about
-                paying yourself first, eliminating costly debt, investing consistently, and protecting what you&rsquo;re
-                building.
-              </p>
-              <p>
-                I created MONEY COACH to help working families understand money, maximize their employee benefits, and
-                build a stronger financial future.
-              </p>
+              {[founderStory.paragraphs[1], founderStory.paragraphs[3], founderStory.paragraphs[4]].map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+              <p className="font-semibold text-ivory">{founderStory.signoff}</p>
             </div>
             <p className="mt-6 font-display text-xl text-gold">— {site.founder.name}</p>
             <div className="mt-10">
@@ -109,6 +116,70 @@ export default function HomePage() {
             <ButtonLink href="/about" variant="outlineLight" className="mt-8">
               Read Gory&rsquo;s story
             </ButtonLink>
+          </Reveal>
+        </div>
+      </Section>
+
+      {/* 2b. Who this is for */}
+      <Section tone="white" id="who-its-for">
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+          <Reveal>
+            <SectionHeading
+              eyebrow="Who this is for"
+              title="Built for working families who are ready to get serious about money."
+              intro="If any of these sound like you, you're in the right place."
+            />
+            <ul className="mt-8 space-y-4">
+              {forYou.map((f) => (
+                <li key={f} className="flex gap-3 text-lg leading-relaxed">
+                  <CheckCircle2 className="mt-1 size-5 shrink-0 text-emerald" aria-hidden />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 rounded-2xl bg-ivory p-5">
+              <p className="text-sm font-semibold text-navy">This probably isn&rsquo;t for you if you want:</p>
+              <ul className="mt-3 space-y-2">
+                {notForYou.map((f) => (
+                  <li key={f} className="flex gap-2.5 text-sm text-slate-600">
+                    <XCircle className="mt-0.5 size-4 shrink-0 text-slate-400" aria-hidden />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+          <Reveal delay={100}>
+            <div className="rounded-[var(--radius-card)] bg-navy p-8 text-ivory shadow-lift sm:p-10 lg:sticky lg:top-28">
+              <Badge variant="light">Flagship program</Badge>
+              <h3 className="mt-5 text-3xl font-bold text-ivory">{reset.name}</h3>
+              <p className="mt-3 flex items-baseline gap-2">
+                <span className="font-display text-6xl font-bold text-gold">${reset.price}</span>
+                <span className="text-ivory/70">one-time</span>
+              </p>
+              <p className="mt-4 font-display text-lg text-gold">One week. One objective. One money move.</p>
+              <ul className="mt-6 space-y-3">
+                {reset.includes.map((i) => (
+                  <li key={i} className="flex gap-3 text-ivory/85">
+                    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-gold" aria-hidden />
+                    <span>{i}</span>
+                  </li>
+                ))}
+              </ul>
+              <ButtonLink href="/money-reset" variant="gold" size="lg" className="mt-9 w-full">
+                See the 7-Week Money Reset <ArrowRight />
+              </ButtonLink>
+              <p className="mt-4 text-center text-sm text-ivory/70">
+                Not sure yet?{" "}
+                <a href="#book-call-heading" className="font-semibold text-ivory underline underline-offset-2">
+                  Start with a free 15-minute call
+                </a>
+                .
+              </p>
+              <p className="mt-4 text-xs leading-relaxed text-ivory/60">
+                Education and coaching only. Results depend on your own decisions and are not guaranteed.
+              </p>
+            </div>
           </Reveal>
         </div>
       </Section>
@@ -267,6 +338,8 @@ export default function HomePage() {
           </Link>
         </p>
       </Section>
+
+      <Testimonials />
 
       {/* 9. Learn */}
       <Section id="learn">

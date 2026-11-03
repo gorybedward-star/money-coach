@@ -6,6 +6,7 @@ import { FounderPhoto } from "@/components/founder-photo";
 import { FounderMilestones } from "@/components/founder-milestones";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
+import { founderStory } from "@/content/founder-story";
 
 export const metadata: Metadata = {
   title: "About Gory",
@@ -30,28 +31,14 @@ export default function AboutPage() {
             <FounderPhoto priority className="aspect-[4/5] w-full max-w-md lg:sticky lg:top-28" />
           </Reveal>
           <div>
-            <SectionHeading eyebrow="My story" title={`Hi, I'm ${site.founder.firstName}.`} />
+            <SectionHeading eyebrow={founderStory.heading} title={`Hi, I'm ${site.founder.firstName}.`} />
             <div className="prose-mc mt-6">
-              <p>
-                I&rsquo;m a U.S. Navy veteran, an investor, and the founder of MONEY COACH. I started investing in stocks at 18. Over the
-                years, I&rsquo;ve built a net worth of approximately $500,000, achieved an approximately 800 credit score, invested in rental
-                properties, and established life insurance protection for my family.
-              </p>
-              <p>
-                I share those numbers for one reason: to show that the principles work. Not because of a lucky break or a huge salary, but
-                because of simple habits repeated over a long time. Pay yourself first. Avoid costly debt. Invest consistently in
-                diversified, low-cost funds. Protect what you&rsquo;re building.
-              </p>
-              <p>
-                Along the way, I noticed how many hardworking people around me were never taught any of this. Good people, earning real
-                paychecks, leaving employer benefits unused, carrying high-interest debt, or waiting to invest because nobody explained how
-                it works. Too often, the help that was available was either expensive or came with a product to sell.
-              </p>
-              <p>
-                That&rsquo;s why I created MONEY COACH: practical, affordable, judgment-free financial education for working families,
-                especially households that didn&rsquo;t grow up learning about money. Everyone is welcome here.
-              </p>
+              {founderStory.paragraphs.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
             </div>
+            <p className="mt-6 font-display text-2xl font-bold text-navy">{founderStory.signoff}</p>
+            <p className="mt-2 font-display text-lg text-emerald">— {site.founder.name}</p>
             <div className="mt-10">
               <FounderMilestones />
             </div>
