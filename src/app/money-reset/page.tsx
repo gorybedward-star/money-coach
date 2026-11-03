@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BellRing, Check, ClipboardCheck, Flag, LineChart, MessageCircleQuestion, Smartphone } from "lucide-react";
-import { features, formatOfferPrice, getOffer, site } from "@/config/site";
+import { ArrowRight, BellRing, Check, ClipboardCheck, Flag, LineChart, MessageCircleQuestion, ShieldCheck, Smartphone } from "lucide-react";
+import { features, formatOfferPrice, getOffer, resetGuarantee, site } from "@/config/site";
 import {
   closingQuestions,
   commitmentCardExample,
@@ -44,7 +44,10 @@ export default function MoneyResetPage() {
   return (
     <>
       <PageHero eyebrow="Mindset + Action + Accountability" title="The 7-Week Money Reset" intro={resetPositioning.replace(/^I help/, "We help")}>
-        <p className="mb-8 font-display text-xl text-gold">One week. One objective. One money move.</p>
+        <p className="mb-3 font-display text-xl text-gold">One week. One objective. One money move.</p>
+        <p className="mb-8 flex items-center gap-2 text-sm text-ivory/80">
+          <ShieldCheck className="size-4 shrink-0 text-gold" aria-hidden /> {resetGuarantee.short}
+        </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <ButtonLink href={cta} size="lg" variant="gold">
             Apply for the Money Reset <ArrowRight />
@@ -223,6 +226,12 @@ export default function MoneyResetPage() {
             <p className="mt-4 text-center text-sm text-ivory/70">
               {features.paymentsEnabled ? "Secure online payment." : "No payment today. We'll talk first to make sure it's the right fit."}
             </p>
+            <div className="mt-6 flex items-start gap-3 rounded-2xl border border-gold/40 bg-white/5 p-4">
+              <ShieldCheck className="mt-0.5 size-5 shrink-0 text-gold" aria-hidden />
+              <p className="text-sm leading-relaxed text-ivory/85">
+                <strong className="text-ivory">{resetGuarantee.title}.</strong> {resetGuarantee.detail}
+              </p>
+            </div>
             {monthly && (
               <p className="mt-6 border-t border-ivory/15 pt-5 text-sm text-ivory/80">
                 <strong className="text-ivory">After you graduate:</strong> keep your momentum with optional monthly accountability

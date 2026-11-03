@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { features, formatOfferCadence, formatOfferPrice, getOffer, offers } from "@/config/site";
-import { ButtonLink } from "@/components/ui/button";
+import { features, formatOfferCadence, formatOfferPrice, offers, resetGuarantee } from "@/config/site";
 import { PageHero, Section, SectionHeading } from "@/components/section";
 import { PricingCards } from "@/components/pricing-cards";
+import { ClientPath } from "@/components/client-path";
 import { ApprovalNote } from "@/components/disclosure";
 import { CtaBand } from "@/components/cta-band";
 
@@ -17,11 +17,11 @@ const faqs = [
   { q: "What do I need to share?", a: "Only what you're comfortable sharing, like general numbers about income, expenses, and debts. We never ask for Social Security numbers, account passwords, or medical information." },
   { q: "How do sessions happen?", a: "Sessions are held by video or phone. After you submit a request, we'll follow up to schedule a time that works for you." },
   { q: "How do I pay?", a: "Online payment isn't available yet. After you request a service, we'll confirm details and next steps with you directly before anything is charged." },
-  { q: "Which service should I start with?", a: "Start with the free Scorecard. If you want lasting change with a coach keeping you accountable, the 7-Week Money Reset is our flagship program. If you have workplace benefits, the Employee Benefits Checkup is our most popular first step. If you feel overwhelmed, a Money Clarity Session is a great place to begin." },
+  { q: "Which service should I start with?", a: "Start with the free Scorecard, then book a free 15-minute call. If you want lasting change with a coach keeping you accountable, the 7-Week Money Reset is our core program. If you only have one specific question, a Money Clarity Session or Employee Benefits Checkup is a good fit." },
+  { q: "What if the Money Reset isn't right for me?", a: resetGuarantee.detail + " The guarantee covers the coaching fee only. Like all coaching, it doesn't promise any specific financial result." },
 ];
 
 export default function PricingPage() {
-  const reset = getOffer("reset");
   return (
     <>
       <PageHero
@@ -35,24 +35,28 @@ export default function PricingPage() {
       </PageHero>
 
       <Section tone="white">
-        {reset && (
-          <div className="mb-12 flex flex-col gap-6 rounded-[var(--radius-card)] border-2 border-gold bg-navy p-7 text-ivory shadow-lift sm:p-9 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Flagship coaching program</p>
-              <h2 className="mt-2 text-3xl font-bold">{reset.name}</h2>
-              <p className="mt-3 text-ivory/80">{reset.description}</p>
-            </div>
-            <div className="shrink-0 lg:text-right">
-              <p className="font-display text-5xl font-bold">{formatOfferPrice(reset)}</p>
-              <p className="text-sm text-ivory/70">for all seven weeks</p>
-              <ButtonLink href={reset.href} variant="gold" className="mt-4">{reset.ctaLabel}</ButtonLink>
-            </div>
-          </div>
-        )}
-        <PricingCards />
+        <SectionHeading
+          eyebrow="Your path"
+          title="Four simple steps, one at a time."
+          intro="Start free and move up only when you're ready. Most families begin with the Scorecard and a free call, then join the 7-Week Money Reset."
+        />
+        <div className="mt-10">
+          <ClientPath />
+        </div>
       </Section>
 
       <Section>
+        <SectionHeading
+          eyebrow="Prefer a single session?"
+          title="One-time help for a specific question."
+          intro="Not ready for seven weeks? These focused sessions are a good fit, and many families use one as a first step."
+        />
+        <div className="mt-10">
+          <PricingCards ids={["clarity", "benefits"]} className="md:grid-cols-2 xl:grid-cols-2 lg:max-w-4xl" />
+        </div>
+      </Section>
+
+      <Section tone="white">
         <SectionHeading eyebrow="Compare" title="At a glance" />
         <div className="mt-8 overflow-x-auto rounded-[var(--radius-card)] border border-navy/10 bg-white shadow-soft">
           <table className="w-full min-w-[36rem] text-left">
@@ -76,7 +80,7 @@ export default function PricingPage() {
         </div>
       </Section>
 
-      <Section tone="white">
+      <Section>
         <SectionHeading eyebrow="Questions" title="Frequently asked questions" />
         <div className="mt-10 grid gap-4 lg:grid-cols-2">
           {faqs.map((f) => (
