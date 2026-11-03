@@ -45,6 +45,21 @@ export const features = {
   milestonesConfirmed: false,
 } as const;
 
+/**
+ * The one next step every page ends with. Opens an email to the founder until
+ * NEXT_PUBLIC_BOOKING_URL (for example a Cal.com link) is set, then opens that instead.
+ */
+const bookCallSubject = "Free 15-minute call request";
+const bookCallBody =
+  "Hi Gory,\n\nI'd like to book a free 15-minute call.\n\nMy name:\nBest days and times to reach me:\nWhat I'd most like help with:\n\nThank you!";
+export const bookCall = {
+  label: "Book your free 15-minute call",
+  href:
+    features.bookingUrl ||
+    `mailto:${site.contactEmail}?subject=${encodeURIComponent(bookCallSubject)}&body=${encodeURIComponent(bookCallBody)}`,
+  isExternal: Boolean(features.bookingUrl),
+} as const;
+
 export type Offer = {
   id: string;
   name: string;
@@ -178,7 +193,8 @@ export const founderMilestones = [
   { value: "18", label: "Age I started investing in stocks" },
   { value: "~$500K", label: "Approximate personal net worth" },
   { value: "~800", label: "Approximate credit score" },
-  { value: "Rentals", label: "Owner of rental properties" },
+  { value: "5", label: "Residential properties" },
+  { value: "300+", label: "Apartment units in a syndication I invested in" },
   { value: "Protected", label: "Life insurance in place for my family" },
 ] as const;
 

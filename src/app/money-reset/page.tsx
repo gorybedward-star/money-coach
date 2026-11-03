@@ -20,6 +20,7 @@ import { PageHero, Section, SectionHeading } from "@/components/section";
 import { ButtonLink } from "@/components/ui/button";
 import { Disclosure } from "@/components/disclosure";
 import { CtaBand } from "@/components/cta-band";
+import { Testimonials } from "@/components/testimonials";
 
 export const metadata: Metadata = {
   title: "The 7-Week Money Reset",
@@ -231,6 +232,8 @@ export default function MoneyResetPage() {
           </div>
         </div>
       </Section>
+
+      <Testimonials title="What Money Reset clients are saying" />
 
       {/* Scorecard */}
       <Section>

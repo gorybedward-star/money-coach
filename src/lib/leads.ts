@@ -1,6 +1,6 @@
 /** Shared lead payload types and validation (used by forms and the API route). */
 
-export type LeadType = "roadmap" | "scorecard" | "tsp-checkup" | "benefits-checklist" | "contact" | "newsletter" | "guide";
+export type LeadType = "roadmap" | "scorecard" | "tsp-checkup" | "benefits-checklist" | "contact" | "newsletter" | "guide" | "testimonial";
 
 export type LeadPayload = {
   type: LeadType;
@@ -18,7 +18,7 @@ export type LeadPayload = {
 export type LeadResponse = { ok: true; delivered: boolean } | { ok: false; error: string };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const TYPES: LeadType[] = ["roadmap", "scorecard", "tsp-checkup", "benefits-checklist", "contact", "newsletter", "guide"];
+const TYPES: LeadType[] = ["roadmap", "scorecard", "tsp-checkup", "benefits-checklist", "contact", "newsletter", "guide", "testimonial"];
 
 export function validateLead(input: unknown): { lead?: LeadPayload; error?: string } {
   if (!input || typeof input !== "object") return { error: "Invalid request." };
@@ -29,7 +29,7 @@ export function validateLead(input: unknown): { lead?: LeadPayload; error?: stri
   if (!EMAIL_RE.test(email)) return { error: "Please enter a valid email address." };
   const name = b.name ? String(b.name).trim().slice(0, 100) : undefined;
   const message = b.message ? String(b.message).trim().slice(0, 3000) : undefined;
-  if (type === "contact" && !message) return { error: "Please include a short message." };
+  if ((type === "contact" || type === "testimonial") && !message) return { error: "Please include a short message." };
   const service = b.service ? String(b.service).slice(0, 50) : undefined;
   const context: Record<string, string | number> = {};
   if (b.context && typeof b.context === "object") {

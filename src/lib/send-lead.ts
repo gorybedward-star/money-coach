@@ -11,6 +11,7 @@ const LABELS: Record<LeadPayload["type"], string> = {
   contact: "Service request / question",
   newsletter: "Newsletter signup",
   guide: "Free guide series signup",
+  testimonial: "Client testimonial",
 };
 
 /**
