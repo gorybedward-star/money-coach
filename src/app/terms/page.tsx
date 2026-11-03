@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "@/components/legal-page";
-import { site } from "@/config/site";
+import { resetGuarantee, site } from "@/config/site";
 
 export const metadata: Metadata = { title: "Terms of Use", robots: { index: false } };
 
@@ -16,7 +16,7 @@ export default function TermsPage() {
       <h2>Tools and calculators</h2>
       <p>Tools provide hypothetical illustrations based on the information you enter and stated assumptions. They are not guarantees or predictions of future results. You are responsible for decisions you make.</p>
       <h2>Coaching services</h2>
-      <p>Service descriptions and prices may change. Specific terms for scheduling, payment, cancellations, and refunds will be provided before any purchase. [TO BE COMPLETED WHEN SERVICES AND PAYMENT PROCESS ARE APPROVED.]</p>
+      <p>Service descriptions and prices may change. Specific terms for scheduling, payment, cancellations, and refunds will be provided before any purchase. 7-Week Money Reset money-back guarantee: {resetGuarantee.detail} The guarantee refunds the program fee only and is not a promise of any financial result. [TO BE COMPLETED WHEN SERVICES AND PAYMENT PROCESS ARE APPROVED.]</p>
       <h2>Your responsibilities</h2>
       <p>Please don&rsquo;t submit sensitive information such as Social Security numbers, account credentials, or medical details, and don&rsquo;t misuse the site or attempt to disrupt it.</p>
       <h2>Intellectual property</h2>

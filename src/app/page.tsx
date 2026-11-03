@@ -9,7 +9,7 @@ import { FounderPhoto } from "@/components/founder-photo";
 import { Reveal } from "@/components/reveal";
 import { PillarsGrid } from "@/components/home/pillars-grid";
 import { RoadmapStepper } from "@/components/home/roadmap-stepper";
-import { PricingCards } from "@/components/pricing-cards";
+import { ClientPath } from "@/components/client-path";
 import { ArticleCard } from "@/components/article-card";
 import { ToolCard } from "@/components/tool-card";
 import { FounderMilestones } from "@/components/founder-milestones";
@@ -326,15 +326,15 @@ export default function HomePage() {
           center
           eyebrow="Affordable coaching"
           title="Real help, at a price working families can afford"
-          intro="Start free. When you want a coach in your corner, choose the level of support that fits."
+          intro="Start free. Take the Scorecard, book a free call, and join the 7-Week Money Reset when you're ready."
         />
         <div className="mt-14">
-          <PricingCards />
+          <ClientPath />
         </div>
         <p className="mt-10 text-center text-sm text-slate-600">
           Proposed launch pricing.{" "}
           <Link href="/pricing" className="font-semibold text-emerald underline underline-offset-2">
-            Compare all services
+            See all services, including one-time sessions
           </Link>
         </p>
       </Section>

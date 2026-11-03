@@ -23,8 +23,8 @@ export default function DisclaimerPage() {
       <p>Benefit availability, eligibility, and rules vary by employer. Your employer&rsquo;s plan documents and plan administrators determine actual coverage and eligibility. We do not guarantee eligibility or savings.</p>
       <h2>Founder milestones</h2>
       <p>Personal financial milestones described on this site are founder-reported, shared to illustrate principles, and are not typical or guaranteed. Individual results vary.</p>
-      <h2>No testimonials or guarantees</h2>
-      <p>We do not promise any specific financial outcome from using our content, tools, or services.</p>
+      <h2>No promised results</h2>
+      <p>We do not promise any specific financial outcome from using our content, tools, or services. Client stories are shared with permission and are not typical or guaranteed results. The 7-Week Money Reset money-back guarantee refunds the program fee only; it is not a promise of any financial result.</p>
     </LegalPage>
   );
 }

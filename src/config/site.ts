@@ -60,6 +60,18 @@ export const bookCall = {
   isExternal: Boolean(features.bookingUrl),
 } as const;
 
+/**
+ * [FOUNDER APPROVAL] Money-back guarantee on the 7-Week Money Reset.
+ * Edit the wording here; the Reset page, pricing ladder, Scorecard results and Terms read from it.
+ * It refunds the coaching fee only. It never promises a financial result.
+ */
+export const resetGuarantee = {
+  title: "Two-week money-back guarantee",
+  short: "Do the first two weeks. If it isn't worth it, you get every dollar back.",
+  detail:
+    "Attend your first two sessions and complete your first two One Money Moves. If you don't feel the Money Reset is worth what you paid, tell us before your Week 3 session and we'll refund 100% of your program fee. No forms and no hard feelings.",
+} as const;
+
 export type Offer = {
   id: string;
   name: string;
@@ -83,12 +95,12 @@ export const offers: Offer[] = [
     cadence: "free",
     deliverable: "Assessment and educational action plan",
     description:
-      "A 10-question check-up on the habits that build family wealth. Get your score and three next steps instantly.",
+      "A 10-question check-up on the habits that build family wealth. See your score and your next money move instantly.",
     includes: [
       "10 quick Yes / Sometimes / No questions",
       "Instant score and plain-English interpretation",
-      "Three recommended educational next steps",
-      "No email required to see results",
+      "Your #1 next money move, free with no email",
+      "Full 3-step plan and the free \"Your First $100,000\" guide by email",
     ],
     bestFor: "Anyone who wants to know where to start",
     ctaLabel: "Take the free Scorecard",

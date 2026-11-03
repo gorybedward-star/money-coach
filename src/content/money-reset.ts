@@ -1,3 +1,5 @@
+import { resetGuarantee } from "@/config/site";
+
 /**
  * The 7-Week Money Reset: public program description, in the founder's words.
  * Week titles, principles and coaching questions match the coaching
@@ -120,6 +122,10 @@ export const sessionFlow = [
 ] as const;
 
 export const resetFaqs = [
+  {
+    q: "Is there a guarantee?",
+    a: `Yes. ${resetGuarantee.detail} The guarantee refunds the coaching fee. It doesn't promise any specific financial result, because your results depend on your own decisions and circumstances.`,
+  },
   {
     q: "Will I be debt-free in seven weeks?",
     a: "No program can honestly promise that, and we won't. The seven weeks are coaching milestones. You'll leave with a clearer financial picture, better habits, and a personal plan for what comes next, at a pace that fits your situation.",

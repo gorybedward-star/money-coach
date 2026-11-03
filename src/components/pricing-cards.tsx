@@ -4,13 +4,13 @@ import { ButtonLink } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-export function PricingCards({ ids }: { ids?: string[] }) {
+export function PricingCards({ ids, className }: { ids?: string[]; className?: string }) {
   // The 7-Week Money Reset is a program with its own page and banner, not a card.
   const list = ids ? offers.filter((o) => ids.includes(o.id)) : offers.filter((o) => o.id !== "reset");
   return (
-    <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <ul className={cn("grid gap-5 md:grid-cols-2 xl:grid-cols-4", className)}>
       {list.map((o) => (
-        <li key={o.id} className={cn(o.featured && "md:col-span-2 xl:col-span-1 xl:-my-4")}>
+        <li key={o.id} className={cn(o.featured && !className && "md:col-span-2 xl:col-span-1 xl:-my-4")}>
           <PricingCard offer={o} />
         </li>
       ))}

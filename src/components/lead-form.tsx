@@ -23,6 +23,7 @@ export function LeadForm({
   defaultService,
   className,
   tone = "light",
+  onSuccess,
 }: {
   type: LeadType;
   context?: LeadPayload["context"];
@@ -35,6 +36,8 @@ export function LeadForm({
   defaultService?: string;
   className?: string;
   tone?: "light" | "dark";
+  /** Called after a successful submit, for example to unlock gated content. */
+  onSuccess?: (delivered: boolean) => void;
 }) {
   const id = useId();
   const [status, setStatus] = useState<Status>({ state: "idle" });
@@ -67,7 +70,10 @@ export function LeadForm({
     try {
       const data = await sendLead(payload);
       if (!data.ok) setStatus({ state: "error", message: data.error });
-      else setStatus({ state: "done", delivered: data.delivered });
+      else {
+        setStatus({ state: "done", delivered: data.delivered });
+        onSuccess?.(data.delivered);
+      }
     } catch {
       setStatus({ state: "error", message: `Something went wrong. Please try again or email ${site.contactEmail}.` });
     }
