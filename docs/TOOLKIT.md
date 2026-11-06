@@ -24,6 +24,18 @@ The toolkit's advantage over the free calculators on the website is that every n
 
 Each link has a checkbox to turn it off and type a number by hand instead. The rules are in one place, `src/lib/toolkit/calc.ts` (`effectiveNetWorth`, `effectiveInvesting`, `toolkitSummary`, `autoTasks`), and are unit tested.
 
+## Coaching layer (added after Stage 1)
+
+These five features use only numbers people already enter. No new questions.
+
+| Feature | Where | How it works |
+|---|---|---|
+| Your Next Best Move | Dashboard | `nextBestMove` walks the Money Coach order (plan that balances → $1,000 starter fund → full employer match → high-interest debt (8%+ APR, in snowball/avalanche order, with its cost per day) → protection review → 3 months saved → investing 15%) and names the first step not yet done. |
+| Day-by-day 30-day plan | 30-Day Reset | 30 steps (`RESET_WEEKS` in `src/content/toolkit.ts`). Day number counts from Day 1; steps check off automatically from data where possible; a streak counts consecutive days with a step checked off. |
+| Before-and-after report | My Results (`#/results`) | Day 1 numbers and scorecard are saved automatically (`captureBaseline`), compared with today. Print or save as PDF on the live site. "Start a new 30 days" resets the steps and baseline. |
+| Goal date + what-if | Net Worth (and dashboard goal ring) | `projectNetWorth` projects month by month from the current plan: debt payoff, Savings line, invested balances at the Investing Calculator's hypothetical return, and freed-up debt payments rolled into investing. Home, vehicle and mortgage held flat. A slider adds $0–$1,000 a month. |
+| Milestone celebrations | Anywhere | `milestones` lists wins (debt paid off, starter fund, 3 and 6 months saved, net worth levels, goal reached, reset weeks, 7-day streak). Each is celebrated once, after the person stops typing. |
+
 ## Project structure
 
 ```
@@ -38,6 +50,8 @@ src/components/toolkit/
   net-worth.tsx                     Module 7 (flagship)
   paycheck.tsx, debt.tsx, emergency.tsx, investing.tsx, benefits.tsx, reset.tsx   Modules 1-6
   data.tsx                          Export / import JSON, load sample, delete all data
+  coach.tsx                         Next Best Move, today's step, goal date + what-if, wins, celebration
+  results.tsx                       My Money Reset Results (Day 1 vs. today)
 src/lib/toolkit/model.ts            Types, defaults, fictional sample family, input validation of stored data
 src/lib/toolkit/calc.ts             All math (pure functions)
 src/content/toolkit.ts              Module list, benefits checklist, TSP basics, 30-day plan, disclaimers

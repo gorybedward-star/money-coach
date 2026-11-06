@@ -3,6 +3,15 @@ import assert from "node:assert/strict";
 import { blankState, normalizeState, sampleState, type Debt } from "../src/lib/toolkit/model.ts";
 import {
   attribute,
+  captureBaseline,
+  milestones,
+  nextBestMove,
+  primeCelebrations,
+  projectNetWorth,
+  resetDay,
+  resetProgress,
+  startReset,
+  streak,
   autoTasks,
   effectiveNetWorth,
   investedAssets,
@@ -155,11 +164,11 @@ test("saving a snapshot for an existing month replaces it and keeps order", () =
   assert.equal(s[1].assets, 5);
 });
 
-test("sample data: 12 months of history ending last month, and a sensible scorecard", () => {
+test("sample data: 13 months of history ending last month, and a sensible scorecard", () => {
   const s = sampleState(new Date(2026, 10, 6));
-  assert.equal(s.netWorth.snapshots.length, 12);
+  assert.equal(s.netWorth.snapshots.length, 13);
   assert.equal(s.netWorth.snapshots.at(-1)!.month, "2026-10");
-  assert.equal(s.netWorth.snapshots[0].month, "2025-11");
+  assert.equal(s.netWorth.snapshots[0].month, "2025-10");
   const card = scorecard(s, ["401k-match", "roth-traditional", "health", "hsa-fsa", "life-disability", "eap", "tuition", "other"]);
   assert.equal(card.rows.length, 7);
   for (const r of card.rows) assert.ok(r.score >= 0 && r.score <= 100, `${r.id} ${r.score}`);
@@ -215,8 +224,79 @@ test("sync: 30-Day Reset steps check themselves off from real data", () => {
   const a = autoTasks(s);
   assert.equal(a["w2-debts"], true);
   assert.equal(a["w2-paycheck"], true);
-  assert.equal(a["w4-move"], true);
+  assert.equal(a["w1-move"], true);
   assert.equal(a["w3-protection"], true);
   const b = autoTasks(blankState());
   assert.ok(Object.values(b).every((v) => !v));
+});
+
+test("Next Best Move follows the Money Coach order", () => {
+  const s = sampleState(new Date(2026, 10, 6));
+  // Sample family: plan balances, starter fund done, match in use, so high-interest debt is next (avalanche: Store card 29.99%).
+  const m = nextBestMove(s);
+  assert.equal(m.id, "high-debt");
+  assert.match(m.title, /Store card/);
+  assert.match(m.detail, /\$0\.74 a day/); // 900 × 29.99% ÷ 365
+  // A plan that overspends comes first.
+  const over = { ...s, paycheck: { ...s.paycheck, expenses: { ...s.paycheck.expenses, other: 2000 } } };
+  assert.equal(nextBestMove(over).id, "plan");
+  // No starter fund yet.
+  const noFund = { ...s, emergency: { ...s.emergency, current: 200 } };
+  assert.equal(nextBestMove(noFund).id, "starter");
+  // Match not confirmed yet comes before debt.
+  const noMatch = { ...s, benefits: { ...s.benefits, items: { ...s.benefits.items, "401k-match": { status: "not-started" as const, note: "" } } } };
+  assert.equal(nextBestMove(noMatch).id, "match");
+  // Debts gone: protection review is next (beneficiaries not confirmed).
+  const paid = { ...s, debt: { ...s.debt, debts: s.debt.debts.map((d) => (d.apr >= 8 ? { ...d, balance: 0 } : d)) } };
+  assert.equal(nextBestMove(paid).id, "protect");
+  assert.equal(nextBestMove(blankState()).id, "plan");
+});
+
+test("goal date: savings only reaches the goal on schedule; extra money gets there sooner", () => {
+  const b = blankState();
+  const s = { ...b, onboarded: true, paycheck: { ...b.paycheck, frequency: "monthly" as const, netPay: 5000, savings: 1000 }, netWorth: { ...b.netWorth, goal: 12_000 } };
+  assert.equal(projectNetWorth(s).goalMonth, 12);
+  assert.equal(projectNetWorth(s, 1000).goalMonth, 6); // extra goes to investing at 7%, a little faster than 12 months
+  const sample = sampleState(new Date(2026, 10, 6));
+  const base = projectNetWorth(sample);
+  const more = projectNetWorth(sample, 200);
+  assert.ok(base.goalMonth! > 0);
+  assert.ok(more.goalMonth! <= base.goalMonth!);
+  assert.ok(more.debtFreeMonth! < base.debtFreeMonth!);
+});
+
+test("30-day reset: day number, streak and today's step", () => {
+  assert.equal(resetDay("2026-11-01", "2026-11-01"), 1);
+  assert.equal(resetDay("2026-11-01", "2026-11-06"), 6);
+  assert.equal(resetDay("2026-10-01", "2026-11-06"), 30);
+  assert.equal(streak({ a: "2026-11-06", b: "2026-11-05", c: "2026-11-03" }, "2026-11-06"), 2);
+  assert.equal(streak({ a: "2026-11-05", b: "2026-11-04" }, "2026-11-06"), 2); // nothing yet today still counts through yesterday
+  assert.equal(streak({ a: "2026-11-03" }, "2026-11-06"), 0);
+  const s = sampleState(new Date(2026, 10, 6));
+  const rp = resetProgress(s, undefined, "2026-11-06");
+  assert.equal(rp.day, 12);
+  assert.equal(rp.streak, 3);
+  assert.equal(rp.todayStep!.id, "w2-pay");
+  assert.equal(rp.total, 30);
+});
+
+test("baseline and new 30 days", () => {
+  const s = sampleState(new Date(2026, 10, 6));
+  const b = captureBaseline(s, "2026-11-06");
+  assert.equal(b.netWorth, 82_350);
+  assert.equal(b.debt, 41_400);
+  const fresh = startReset(s, "2026-11-06", true);
+  assert.equal(fresh.reset.startedAt, "2026-11-06");
+  assert.deepEqual(fresh.reset.done, {});
+  assert.equal(fresh.reset.baseline!.netWorth, 82_350);
+});
+
+test("milestones: paying off a debt is celebrated once", () => {
+  const s = primeCelebrations(sampleState(new Date(2026, 10, 6)));
+  assert.ok(milestones(s).every((m) => s.celebrated.includes(m.id)));
+  const paid = { ...s, debt: { ...s.debt, debts: s.debt.debts.map((d) => (d.id === "d-store" ? { ...d, balance: 0 } : d)) } };
+  const fresh = milestones(paid).filter((m) => !paid.celebrated.includes(m.id));
+  assert.deepEqual(fresh.map((m) => m.id), ["debt-d-store"]);
+  assert.ok(milestones(s).some((m) => m.id === "nw-50000"));
+  assert.ok(!milestones(s).some((m) => m.id === "nw-100000"));
 });
