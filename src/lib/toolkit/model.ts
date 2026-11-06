@@ -71,7 +71,28 @@ export type BenefitEntry = { status: BenefitStatus; note: string };
 export type Benefits = { federal: boolean; items: Record<string, BenefitEntry> };
 
 export type OneMoneyMove = { priority: string; commitment: string; measure: string; deadline: string };
-export type Reset = { done: Record<string, boolean>; move: OneMoneyMove };
+/** Where the customer stood on Day 1 of the 30-Day Reset, for the before-and-after report. */
+export type Baseline = {
+  date: string; // YYYY-MM-DD
+  netWorth: number;
+  debt: number; // consumer debt (Debt Freedom Tracker), not mortgages
+  emergency: number;
+  monthsCovered: number | null;
+  savingsRate: number;
+  investingMonthly: number;
+  score: number;
+  rows: Record<string, number>;
+};
+
+export type Reset = {
+  done: Record<string, boolean>;
+  /** Day a step was checked off (YYYY-MM-DD), for the streak. */
+  doneAt: Record<string, string>;
+  move: OneMoneyMove;
+  /** Day 1 of the current 30 days (YYYY-MM-DD). */
+  startedAt: string;
+  baseline: Baseline | null;
+};
 
 export type AssetCategory = "cash" | "brokerage" | "retirement" | "vehicle" | "business" | "other";
 export type LiabilityCategory = "credit-card" | "auto" | "student" | "personal" | "other";
@@ -124,6 +145,8 @@ export type ToolkitState = {
   benefits: Benefits;
   reset: Reset;
   netWorth: NetWorth;
+  /** Milestones already celebrated, so each one is celebrated once. */
+  celebrated: string[];
 };
 
 let counter = 0;
@@ -163,9 +186,18 @@ export function blankState(): ToolkitState {
     emergency: { current: 0, essentialsFromPaycheck: true, essentials: 0, contribution: 0, frequency: "biweekly", starterGoal: 1000, goal: "starter", syncToNetWorth: true, contributionFromPaycheck: true },
     investing: { start: 0, monthly: 0, returnPct: 7, years: 25, inflationPct: 3, showReal: false, startFromNetWorth: true, monthlyFromPaycheck: true },
     benefits: { federal: false, items: {} },
-    reset: { done: {}, move: { priority: "", commitment: "", measure: "", deadline: "" } },
+    reset: { done: {}, doneAt: {}, move: { priority: "", commitment: "", measure: "", deadline: "" }, startedAt: "", baseline: null },
     netWorth: { assets: [], liabilities: [], properties: [], snapshots: [], goal: 100_000, debtsFromTracker: true },
+    celebrated: [],
   };
+}
+
+export function dayKey(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+export function addDays(day: string, n: number) {
+  const [y, m, d] = day.split("-").map(Number);
+  return dayKey(new Date(y, m - 1, d + n));
 }
 
 /** A fictional household used for the demo. Snapshot months are relative to `today` so the chart always looks current. */
@@ -187,11 +219,11 @@ export function sampleState(today = new Date()): ToolkitState {
   const liabilities: LiabilityItem[] = [];
   const properties: Property[] = [{ id: "p-home", name: "Home", value: 285_000, mortgage: 231_000 }];
 
-  // Twelve past months of steady progress: assets up, debts down. Current numbers are not yet saved for this month.
+  // Thirteen past months of steady progress: assets up, debts down. Current numbers are not yet saved for this month.
   const now = monthKey(today);
   const snapshots: Snapshot[] = [];
-  for (let i = 12; i >= 1; i--) {
-    const k = 12 - i; // 0..11
+  for (let i = 13; i >= 1; i--) {
+    const k = 12 - i; // -1..11
     const assets = Math.round(331_400 + k * 1_930 + (k % 3 === 1 ? -1_100 : 0));
     const liabilities = Math.round(287_600 - k * 1_340);
     snapshots.push({ id: `s-${k}`, month: addMonths(now, -i), assets, liabilities });
@@ -226,15 +258,37 @@ export function sampleState(today = new Date()): ToolkitState {
       },
     },
     reset: {
-      done: { "w1-numbers": true, "w1-networth": true, "w1-snapshot": true, "w2-paycheck": true },
+      // Day 12 of the 30 days, on a 3-day streak.
+      done: { "w1-start": true, "w1-numbers": true, "w1-spend": true, "w1-subs": true, "w2-cards": true, "w2-call": true },
+      doneAt: {
+        "w1-start": addDays(dayKey(today), -11),
+        "w1-numbers": addDays(dayKey(today), -10),
+        "w1-spend": addDays(dayKey(today), -7),
+        "w1-subs": addDays(dayKey(today), -3),
+        "w2-cards": addDays(dayKey(today), -2),
+        "w2-call": addDays(dayKey(today), -1),
+      },
       move: {
         priority: "Pay off the store card",
         commitment: "Send an extra $150 to the store card every payday until it is gone.",
         measure: "Balance reaches $0 and the card stays in the drawer.",
         deadline: "",
       },
+      startedAt: addDays(dayKey(today), -11),
+      baseline: {
+        date: addDays(dayKey(today), -11),
+        netWorth: 79_420,
+        debt: 42_650,
+        emergency: 1_900,
+        monthsCovered: 0.47,
+        savingsRate: 0.075,
+        investingMonthly: 200,
+        score: 48,
+        rows: { savings: 35, debt: 35, cashflow: 50, retirement: 50, benefits: 25, protection: 0, networth: 70 },
+      },
     },
     netWorth: { assets, liabilities, properties, snapshots, goal: 100_000, debtsFromTracker: true },
+    celebrated: [],
   };
 }
 
@@ -252,7 +306,8 @@ export function normalizeState(raw: unknown): ToolkitState | null {
     emergency: { ...base.emergency, ...r.emergency },
     investing: { ...base.investing, ...r.investing },
     benefits: { ...base.benefits, ...r.benefits, items: { ...r.benefits?.items } },
-    reset: { done: { ...r.reset?.done }, move: { ...base.reset.move, ...r.reset?.move } },
+    reset: { ...base.reset, ...r.reset, done: { ...r.reset?.done }, doneAt: { ...r.reset?.doneAt }, move: { ...base.reset.move, ...r.reset?.move } },
+    celebrated: Array.isArray(r.celebrated) ? r.celebrated : [],
     netWorth: {
       ...base.netWorth,
       ...r.netWorth,

@@ -8,6 +8,7 @@ import { autoTasks, formatMonth, goalProgress, investedAssets, monthLabel, netWo
 import type { ToolkitState } from "@/lib/toolkit/model";
 import { useToolkit, go } from "./store";
 import { NetWorthArea } from "./charts";
+import { NextMoveCard, TodayStepCard, WinsStrip, goalDate } from "./coach";
 import { netWorthSeries } from "./net-worth";
 import { Btn, Card, Eyebrow, Progress, Ring, Stat, pct, signed, usd } from "./ui";
 
@@ -30,6 +31,7 @@ export function Dashboard() {
   const hist = netWorthHistory(state.netWorth.snapshots);
   const goal = state.netWorth.goal;
   const gp = goalProgress(t.nw.netWorth, goal);
+  const goalMonth = useMemo(() => goalDate(state, t), [state, t]);
   const move = state.reset.move;
   const em = t.emergency;
   const hasDebt = t.progress.current > 0;
@@ -81,6 +83,7 @@ export function Dashboard() {
               <Eyebrow className="text-white/60">Goal</Eyebrow>
               <p className="text-lg font-semibold tabular-nums">{goal >= 1_000_000 ? `$${goal / 1_000_000}M` : usd(goal)}</p>
               <p className="text-xs text-white/60">{t.nw.netWorth >= goal ? "Reached" : `${usd(goal - t.nw.netWorth)} to go`}</p>
+              {goalMonth !== null && goalMonth > 0 && <p className="mt-1 text-xs font-medium text-[#8cc7b5]">On pace for {monthLabel(goalMonth)}</p>}
             </div>
           </div>
         </div>
@@ -95,6 +98,8 @@ export function Dashboard() {
         </div>
       </section>
 
+      <NextMoveCard state={state} t={t} />
+
       <ConnectedView state={state} t={t} />
 
       {/* 2-7 */}
@@ -107,8 +112,9 @@ export function Dashboard() {
         <Tile label="Net worth goal" value={pct(gp)} sub={`Toward ${usd(goal)}`} progress={gp} href="net-worth" />
       </div>
 
-      {/* 8. My One Money Move */}
-      <Card className="mt-4 border-[#167d68]/25" pad={false}>
+      {/* 8. My One Money Move + today's 30-day step */}
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1.7fr_1fr]">
+      <Card className="border-[#167d68]/25" pad={false}>
         <div className="grid gap-0 sm:grid-cols-[auto_1fr]">
           <div className="flex items-center gap-3 rounded-t-2xl bg-[#eef6f3] p-5 sm:rounded-l-2xl sm:rounded-tr-none sm:px-6">
             <Target className="size-6 text-[#167d68]" />
@@ -136,6 +142,10 @@ export function Dashboard() {
           </div>
         </div>
       </Card>
+      <TodayStepCard state={state} t={t} />
+      </div>
+
+      <WinsStrip state={state} t={t} />
 
       {/* Modules */}
       <section className="mt-10">

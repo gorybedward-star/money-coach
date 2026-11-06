@@ -2,8 +2,12 @@
  * Financial Reset Toolkit calculations. Pure functions, unit tested in tests/toolkit.test.mts.
  * Everything is an educational estimate in today's dollars unless noted.
  */
+import { BENEFIT_ITEMS, RESET_STEPS, RESET_WEEKS } from "../../content/toolkit.ts";
 import {
   EXPENSES,
+  addDays,
+  dayKey,
+  type Baseline,
   FREQUENCIES,
   addMonths,
   monthKey,
@@ -64,6 +68,8 @@ export type DebtSim = {
   order: string[];
   /** Total balance at the end of each month (index 0 = today). */
   balances: number[];
+  /** Total paid in each month (index 0 = month 1). */
+  payments: number[];
   neverPaysOff: boolean;
 };
 
@@ -91,12 +97,14 @@ export function simulateDebts(debts: Debt[], extra: number, strategy: Strategy, 
   const totalMin = live.reduce((s, d) => s + d.min, 0);
   const budget = totalMin + pos(extra);
   const balances = [live.reduce((s, d) => s + d.bal, 0)];
+  const payments: number[] = [];
   let month = 0;
   let totalInterest = 0;
   let totalPaid = 0;
 
   while (live.some((d) => d.bal > 0.005) && month < MAX_MONTHS) {
     month++;
+    const paidBefore = totalPaid;
     for (const d of live) {
       if (d.bal <= 0) continue;
       const i = (d.bal * d.apr) / 100 / 12;
@@ -137,8 +145,9 @@ export function simulateDebts(debts: Debt[], extra: number, strategy: Strategy, 
       }
     }
     balances.push(live.reduce((s, d) => s + Math.max(0, d.bal), 0));
+    payments.push(totalPaid - paidBefore);
   }
-  return { months: month, totalInterest, totalPaid, perDebt, order, balances, neverPaysOff: live.some((d) => d.bal > 0.005) };
+  return { months: month, totalInterest, totalPaid, perDebt, order, balances, payments, neverPaysOff: live.some((d) => d.bal > 0.005) };
 }
 
 /** Debts whose minimum payment doesn't cover the first month's interest. */
@@ -338,18 +347,21 @@ export function toolkitSummary(s: ToolkitState) {
 export function autoTasks(s: ToolkitState, t = toolkitSummary(s)): Record<string, boolean> {
   const st = (id: string) => s.benefits.items[id]?.status ?? "not-started";
   const reviewed = Object.values(s.benefits.items).filter((b) => b.status !== "not-started").length;
+  const hasDebt = s.debt.debts.some((d) => d.balance > 0);
   return {
     "w1-networth": t.nw.assets > 0,
     "w1-snapshot": s.netWorth.snapshots.length > 0,
+    "w1-move": s.reset.move.commitment.trim().length > 0,
     "w2-paycheck": t.pay.income > 0 && t.pay.expenses > 0,
-    "w2-debts": s.debt.debts.some((d) => d.balance > 0),
-    "w2-method": s.debt.debts.some((d) => d.balance > 0) && s.debt.extra > 0,
+    "w2-zero": t.pay.income > 0 && t.pay.remaining >= 0,
+    "w2-debts": hasDebt,
+    "w2-method": hasDebt && s.debt.extra > 0,
     "w3-auto": t.emergency.monthly > 0,
     "w3-benefits": reviewed >= 5,
+    "w3-match": ["401k-match", "tsp"].some((id) => st(id) === "using" || st(id) === "not-offered"),
     "w3-protection": PROTECTION_ITEMS.every((id) => st(id) !== "not-started"),
-    "w4-match": ["401k-match", "tsp"].some((id) => st(id) === "using" || st(id) === "not-offered"),
     "w4-invest": t.investing.monthly > 0,
-    "w4-move": s.reset.move.commitment.trim().length > 0,
+    "w4-snapshot2": s.netWorth.snapshots.length >= 2,
   };
 }
 
@@ -402,4 +414,201 @@ export function scorecard(s: ToolkitState, benefitIds: string[]): { rows: ScoreR
 
 export function nextMonths(n: number, from = monthKey()) {
   return Array.from({ length: n }, (_, i) => addMonths(from, i));
+}
+
+// ---------------------------------------------------------------- Next Best Move
+
+export const HIGH_INTEREST_APR = 8;
+
+export function benefitIdsFor(s: ToolkitState) {
+  return BENEFIT_ITEMS.filter((i) => !i.federal || s.benefits.federal).map((i) => i.id);
+}
+
+export type PathStep = { id: string; label: string; done: boolean };
+export type NextMove = { id: string; title: string; detail: string; href: string; cta: string; path: PathStep[] };
+
+const usd0 = (n: number) => Math.round(n).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+const usd2 = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+/**
+ * The one thing to do next, following the Money Coach order: a plan that balances, a starter emergency fund, the full
+ * employer match, high-interest debt, protection, 3+ months of savings, then investing 15%. Uses only what's entered.
+ */
+export function nextBestMove(s: ToolkitState, t = toolkitSummary(s)): NextMove {
+  const st = (id: string) => s.benefits.items[id]?.status ?? "not-started";
+  const retirementIds = s.benefits.federal ? ["tsp", "401k-match"] : ["401k-match"];
+  const matchStatus = retirementIds.map(st);
+  const matchDone = matchStatus.some((x) => x === "using" || x === "not-offered");
+  const high = s.debt.debts.filter((d) => d.balance > 0 && d.apr >= HIGH_INTEREST_APR);
+  const protectionDone = PROTECTION_ITEMS.every((id) => st(id) !== "not-started") && !!s.reset.done["w3-beneficiaries"];
+  const em = t.emergency;
+  const starter = em.goals[0];
+  const three = em.goals[1];
+  const invRate = t.pay.income > 0 ? t.pay.investing / t.pay.income : 0;
+
+  const path: PathStep[] = [
+    { id: "plan", label: "Plan that balances", done: t.pay.income > 0 && t.pay.remaining >= 0 },
+    { id: "starter", label: "Starter emergency fund", done: em.current >= starter.target },
+    { id: "match", label: "Full employer match", done: matchDone },
+    { id: "high-debt", label: "High-interest debt gone", done: high.length === 0 },
+    { id: "protect", label: "Family protected", done: protectionDone },
+    { id: "three", label: "3+ months saved", done: three.target > 0 && em.current >= three.target },
+    { id: "invest", label: "Investing 15%", done: invRate >= 0.15 },
+  ];
+  const mk = (id: string, title: string, detail: string, href: string, cta: string): NextMove => ({ id, title, detail, href, cta, path });
+
+  if (t.pay.income <= 0) return mk("plan", "Start with your paycheck", "Enter your take-home pay and monthly bills. Every other recommendation builds on it.", "paycheck", "Open Paycheck Planner");
+  if (t.pay.remaining < 0) return mk("plan", `Close the ${usd0(-t.pay.remaining)} gap in your plan`, `Your plan spends ${usd0(-t.pay.remaining)} a month more than you bring home. Trim one expense or lower an allocation until it balances, so new debt doesn't fill the gap.`, "paycheck", "Balance my plan");
+  if (em.current < starter.target) {
+    const left = starter.target - em.current;
+    const when = em.monthly > 0 ? ` At ${usd0(em.monthly)} a month you'll get there in about ${Math.ceil(left / em.monthly)} month${Math.ceil(left / em.monthly) === 1 ? "" : "s"}.` : " Set up an automatic transfer on payday to get there.";
+    return mk("starter", `Build your ${usd0(starter.target)} starter emergency fund`, `${usd0(left)} to go.${when} This keeps a flat tire or a doctor's bill from becoming new debt.`, "emergency", "Open Emergency Fund");
+  }
+  if (!matchDone) {
+    const name = s.benefits.federal ? "TSP agency match" : "employer match";
+    return mk("match", `Capture your full ${name}`, s.benefits.federal ? "Contributing at least 5% of basic pay gets you the full 5% from your agency under FERS. Confirm it, then mark it in your Benefits Checklist." : "Matching dollars are an instant return you can't get anywhere else. Ask HR what you need to contribute to get all of it, then mark it in your Benefits Checklist.", "benefits", "Check my benefits");
+  }
+  if (high.length) {
+    const order = priorityOrder(high, s.debt.strategy);
+    const target = high.find((d) => d.id === order[0])!;
+    const perDay = (target.balance * target.apr) / 100 / 365;
+    const extra = s.debt.extra > 0 ? `Put your extra ${usd0(s.debt.extra)} a month here` : "Add even $50 a month extra here";
+    return mk("high-debt", `Pay off your ${target.name || "highest-priority debt"}`, `At ${target.apr}% it costs you about ${usd2(perDay)} a day in interest. ${extra}, and it's gone around ${monthLabel(t.plan.perDebt[target.id]?.month ?? t.plan.months)}.`, "debt", "Open Debt Tracker");
+  }
+  if (!protectionDone) return mk("protect", "Protect what you're building", "Review your health, life and disability coverage and confirm your beneficiaries. One illness, injury or loss shouldn't undo your progress. Insurance is regulated by each state; talk with a licensed professional before buying coverage.", "benefits", "Review my protection");
+  if (three.target > 0 && em.current < three.target) {
+    const left = three.target - em.current;
+    return mk("three", "Grow your emergency fund to 3 months", `${usd0(left)} to go to cover 3 months of essentials${em.monthly > 0 ? `, about ${Math.ceil(left / em.monthly)} months at your current pace` : ""}.`, "emergency", "Open Emergency Fund");
+  }
+  if (invRate < 0.15) {
+    const add = Math.max(0, 0.15 * t.pay.income - t.pay.investing);
+    return mk("invest", "Invest 15% of your take-home pay", `You're investing ${(invRate * 100).toFixed(0)}% now. Adding about ${usd0(add)} a month gets you to 15%. Raising it 1% at a time works too.`, "investing", "See what it grows to");
+  }
+  if (t.progress.current > 0) return mk("debt-free", "Finish off your remaining debt", `Your foundation is in place. You're on track to be debt-free around ${monthLabel(t.plan.months)}.`, "debt", "Open Debt Tracker");
+  return mk("grow", "Stay the course and grow", `Your foundation is complete. Keep investing every month and save a net worth snapshot each month on your way to ${usd0(s.netWorth.goal)}.`, "net-worth", "Open Net Worth");
+}
+
+// ---------------------------------------------------------------- Goal date + what-if
+
+/**
+ * Month-by-month net worth projection from what's already entered: debts paid on the current plan, the Savings line
+ * added as cash, invested balances growing at the Investing Calculator's hypothetical return with monthly investing.
+ * When debts are paid off, their payments roll into investing. Home, vehicle and mortgage values are held flat.
+ * `extra` is a what-if amount added each month (to debt while any remains, then to investing).
+ */
+export function projectNetWorth(s: ToolkitState, extra = 0, t = toolkitSummary(s), maxMonths = 600) {
+  const plan = simulateDebts(s.debt.debts, s.debt.extra + pos(extra), s.debt.strategy);
+  const capacity = debtTrackerMonthly(s.debt.debts, s.debt.extra + pos(extra));
+  const r = pos(s.investing.returnPct) / 100 / 12;
+  const i0 = investedAssets(t.sheet);
+  const d0 = plan.balances[0] ?? 0;
+  const goal = s.netWorth.goal;
+  let inv = i0;
+  let cash = 0;
+  const series: { m: number; nw: number }[] = [{ m: 0, nw: t.nw.netWorth }];
+  let goalMonth: number | null = t.nw.netWorth >= goal ? 0 : null;
+  for (let m = 1; m <= maxMonths; m++) {
+    const paid = plan.payments[m - 1] ?? 0;
+    const freed = Math.max(0, capacity - paid);
+    inv = inv * (1 + r) + t.investing.monthly + freed;
+    cash += t.pay.savings;
+    const debt = plan.balances[Math.min(m, plan.balances.length - 1)] ?? 0;
+    const nw = t.nw.netWorth + cash + (inv - i0) + (d0 - debt);
+    series.push({ m, nw });
+    if (goalMonth === null && nw >= goal) goalMonth = m;
+    if (goalMonth !== null && m >= goalMonth + 12 && m >= 60) break;
+  }
+  return { series, goalMonth, debtFreeMonth: plan.balances[0] > 0 && !plan.neverPaysOff ? plan.months : null };
+}
+
+export function durationLabel(months: number) {
+  if (months <= 0) return "now";
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  return [y ? `${y} yr` : "", m ? `${m} mo` : ""].filter(Boolean).join(" ");
+}
+
+// ---------------------------------------------------------------- 30-Day Reset: days, streak, baseline
+
+export function resetDay(startedAt: string, today = dayKey()) {
+  if (!startedAt) return 1;
+  const [y1, m1, d1] = startedAt.split("-").map(Number);
+  const [y2, m2, d2] = today.split("-").map(Number);
+  const diff = Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86_400_000);
+  return Math.max(1, Math.min(30, diff + 1));
+}
+
+/** Consecutive days with at least one step checked off, ending today (or yesterday, if nothing yet today). */
+export function streak(doneAt: Record<string, string>, today = dayKey()) {
+  const days = new Set(Object.values(doneAt));
+  let cur = days.has(today) ? today : addDays(today, -1);
+  let n = 0;
+  while (days.has(cur)) {
+    n++;
+    cur = addDays(cur, -1);
+  }
+  return n;
+}
+
+export function resetProgress(s: ToolkitState, t = toolkitSummary(s), today = dayKey()) {
+  const auto = autoTasks(s, t);
+  const done = Object.fromEntries(RESET_STEPS.map((x) => [x.id, taskDone(s, auto, x.id)])) as Record<string, boolean>;
+  const day = resetDay(s.reset.startedAt, today);
+  const completed = RESET_STEPS.filter((x) => done[x.id]).length;
+  const todayStep = RESET_STEPS.find((x) => !done[x.id] && x.day <= day) ?? RESET_STEPS.find((x) => !done[x.id]) ?? null;
+  return { auto, done, day, completed, total: RESET_STEPS.length, todayStep, streak: streak(s.reset.doneAt, today) };
+}
+
+export function captureBaseline(s: ToolkitState, today = dayKey()): Baseline {
+  const t = toolkitSummary(s);
+  const card = scorecard(s, benefitIdsFor(s));
+  return {
+    date: today,
+    netWorth: t.nw.netWorth,
+    debt: t.progress.current,
+    emergency: t.emergency.current,
+    monthsCovered: t.emergency.months,
+    savingsRate: t.pay.savingsRate,
+    investingMonthly: t.investing.monthly,
+    score: card.total,
+    rows: Object.fromEntries(card.rows.map((r) => [r.id, r.score])),
+  };
+}
+
+/** Starts a fresh 30 days: Day 1 is today and today's numbers become the baseline. */
+export function startReset(s: ToolkitState, today = dayKey(), clearSteps = false): ToolkitState {
+  const reset = { ...s.reset, startedAt: today, ...(clearSteps ? { done: {}, doneAt: {} } : {}) };
+  const next = { ...s, reset };
+  return { ...next, reset: { ...reset, baseline: captureBaseline(next, today) } };
+}
+
+// ---------------------------------------------------------------- Milestones
+
+export type Milestone = { id: string; title: string; detail: string };
+const NW_LEVELS = [10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1_000_000, 2_000_000, 5_000_000];
+
+export function milestones(s: ToolkitState, t = toolkitSummary(s)): Milestone[] {
+  const out: Milestone[] = [];
+  const em = t.emergency;
+  if (s.netWorth.snapshots.length) out.push({ id: "first-snapshot", title: "First snapshot saved", detail: "Your starting line is on record. Every month from here shows your progress." });
+  if (t.nw.netWorth > 0 && (t.nw.assets > 0 || t.nw.liabilities > 0)) out.push({ id: "nw-positive", title: "You own more than you owe", detail: "Positive net worth. Now grow it a little every month." });
+  for (const lvl of NW_LEVELS) if (t.nw.netWorth >= lvl) out.push({ id: `nw-${lvl}`, title: `Net worth passed ${usd0(lvl)}`, detail: "A real milestone. Keep doing what got you here." });
+  if (s.netWorth.goal > 0 && t.nw.netWorth >= s.netWorth.goal) out.push({ id: `goal-${s.netWorth.goal}`, title: `You reached your ${usd0(s.netWorth.goal)} goal`, detail: "Set your next goal on the Net Worth page." });
+  if (em.goals[0].target > 0 && em.current >= em.goals[0].target) out.push({ id: `starter-${em.goals[0].target}`, title: "Starter emergency fund complete", detail: `${usd0(em.goals[0].target)} set aside for life's surprises.` });
+  if (em.months !== null && em.months >= 3) out.push({ id: "ef-3", title: "Three months of essentials saved", detail: "A solid safety net for your family." });
+  if (em.months !== null && em.months >= 6) out.push({ id: "ef-6", title: "Six months of essentials saved", detail: "A full emergency fund. Few households get here." });
+  for (const d of s.debt.debts) if (d.balance <= 0 && d.startBalance > 0) out.push({ id: `debt-${d.id}`, title: `${d.name || "A debt"} is paid off`, detail: `${usd0(d.startBalance)} gone for good. Roll that payment into the next one.` });
+  const had = s.debt.debts.some((d) => d.startBalance > 0);
+  if (had && s.debt.debts.every((d) => d.balance <= 0)) out.push({ id: "debt-free", title: "Consumer debt free", detail: "Every card and loan in your tracker is at $0." });
+  if (t.pay.savingsRate >= 0.15) out.push({ id: "save-15", title: "Saving 15% or more", detail: "You're paying yourself first in a big way." });
+  const rp = resetProgress(s, t);
+  for (const w of RESET_WEEKS) if (w.tasks.every((x) => rp.done[x.id])) out.push({ id: `reset-week-${w.n}-${s.reset.startedAt}`, title: `Week ${w.n} of your reset complete`, detail: w.title + ". Done." });
+  if (rp.completed === rp.total) out.push({ id: `reset-complete-${s.reset.startedAt}`, title: "30-Day Money Reset complete", detail: "All 30 steps done. Open your results report." });
+  if (rp.streak >= 7) out.push({ id: `streak-7-${s.reset.startedAt}`, title: "7-day streak", detail: "A week of showing up for your money, every day." });
+  return out;
+}
+
+/** Marks everything already achieved as celebrated (used for the sample family). */
+export function primeCelebrations(s: ToolkitState): ToolkitState {
+  return { ...s, celebrated: milestones(s).map((m) => m.id) };
 }

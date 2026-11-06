@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ComponentType } from "react";
 import {
+  Award,
   CalendarCheck,
   ChartLine,
   ClipboardCheck,
@@ -27,6 +28,9 @@ import { BenefitsChecklist } from "./benefits";
 import { MoneyReset } from "./reset";
 import { NetWorthTracker } from "./net-worth";
 import { DataSettings } from "./data";
+import { Results } from "./results";
+import { Celebration } from "./coach";
+import { startReset } from "@/lib/toolkit/calc";
 
 const NAV: { view: View; label: string; icon: ComponentType<{ className?: string }>; n?: number }[] = [
   { view: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -37,6 +41,7 @@ const NAV: { view: View; label: string; icon: ComponentType<{ className?: string
   { view: "investing", label: "Investing", icon: Sprout, n: 4 },
   { view: "benefits", label: "Benefits Checklist", icon: ClipboardCheck, n: 5 },
   { view: "reset", label: "30-Day Reset", icon: CalendarCheck, n: 6 },
+  { view: "results", label: "My Results", icon: Award },
 ];
 
 const MOBILE_TABS: View[] = ["dashboard", "net-worth", "paycheck", "debt"];
@@ -97,7 +102,7 @@ function SidebarFooter({ onPick }: { onPick?: () => void }) {
 function PrototypeBanner() {
   const { state } = useToolkit();
   return (
-    <div className="border-b border-[#b8954a]/30 bg-[#fbf6ea] px-4 py-2 text-center text-[12px] leading-snug text-[#5c4a1f]">
+    <div className="border-b border-[#b8954a]/30 bg-[#fbf6ea] px-4 py-2 print:hidden text-center text-[12px] leading-snug text-[#5c4a1f]">
       <strong className="font-semibold">Prototype.</strong> {state.mode === "sample" ? "Showing a fictional sample family. " : ""}Everything is saved only in this browser. Please don&rsquo;t enter account numbers or other sensitive details.{" "}
       <a href="#/data" className="font-semibold underline underline-offset-2">Manage data</a>
     </div>
@@ -105,9 +110,14 @@ function PrototypeBanner() {
 }
 
 function Shell() {
-  const { state } = useToolkit();
+  const { state, update } = useToolkit();
   const view = useView();
   const [open, setOpen] = useState(false);
+
+  // Day 1 of the 30-Day Reset starts the first time the dashboard is used, with today's numbers as the baseline.
+  useEffect(() => {
+    if (state.onboarded && !state.reset.startedAt) update((s) => (s.reset.startedAt ? s : startReset(s)));
+  }, [state.onboarded, state.reset.startedAt, update]);
 
   useEffect(() => {
     if (!state.onboarded && view !== "welcome") go("welcome");
@@ -132,6 +142,7 @@ function Shell() {
       case "reset": return <MoneyReset />;
       case "net-worth": return <NetWorthTracker />;
       case "data": return <DataSettings />;
+      case "results": return <Results />;
       default: return <Dashboard />;
     }
   })();
@@ -141,7 +152,7 @@ function Shell() {
       <a href="#toolkit-main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
 
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[264px] flex-col justify-between bg-[#0b1f3a] px-4 py-6 lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[264px] print:!hidden flex-col justify-between bg-[#0b1f3a] px-4 py-6 lg:flex">
         <div className="space-y-8">
           <div className="px-3"><Wordmark /></div>
           <NavList view={view} />
@@ -150,7 +161,7 @@ function Shell() {
       </aside>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex items-center justify-between bg-[#0b1f3a] px-4 py-3 lg:hidden">
+      <header className="sticky top-0 z-30 flex items-center justify-between bg-[#0b1f3a] px-4 py-3 print:hidden lg:hidden">
         <Wordmark />
         <button type="button" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(true)} className="grid size-10 place-items-center rounded-xl text-white hover:bg-white/10">
           <Menu className="size-5" />
@@ -176,7 +187,7 @@ function Shell() {
         </div>
       )}
 
-      <div className="lg:pl-[264px]">
+      <div className="lg:pl-[264px] print:pl-0">
         <PrototypeBanner />
         <main id="toolkit-main" className="mx-auto max-w-6xl px-4 pb-28 pt-6 sm:px-6 sm:pt-8 lg:px-10 lg:pb-16 lg:pt-10">
           {page}
@@ -187,8 +198,10 @@ function Shell() {
         </main>
       </div>
 
+      <Celebration />
+
       {/* Mobile bottom tabs */}
-      <nav aria-label="Quick" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-[#e3e8ef] bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+      <nav aria-label="Quick" className="fixed inset-x-0 bottom-0 z-30 print:hidden grid grid-cols-5 border-t border-[#e3e8ef] bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
         {MOBILE_TABS.map((v) => {
           const item = NAV.find((n) => n.view === v)!;
           const Icon = item.icon;

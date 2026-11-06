@@ -13,8 +13,9 @@ import {
   type Snapshot,
   type ToolkitState,
 } from "@/lib/toolkit/model";
-import { effectiveNetWorth, formatMonth, goalProgress, netWorthHistory, netWorthSummary, snapNW, sortSnapshots, upsertSnapshot } from "@/lib/toolkit/calc";
+import { effectiveNetWorth, toolkitSummary, formatMonth, goalProgress, netWorthHistory, netWorthSummary, snapNW, sortSnapshots, upsertSnapshot } from "@/lib/toolkit/calc";
 import { useToolkit } from "./store";
+import { GoalDateCard } from "./coach";
 import { AssetsLiabilitiesBars, NetWorthArea, type NWPoint } from "./charts";
 import { Btn, Card, SyncBadge, Eyebrow, Learn, NumField, PageHeader, Progress, SelectField, Stat, TextField, Tip, pct, signed, usd } from "./ui";
 
@@ -33,7 +34,7 @@ export function netWorthSeries(s: ToolkitState): NWPoint[] {
 }
 
 function Change({ label, data }: { label: string; data: { change: number; assetChange: number; debtReduction: number; gap: number } | null }) {
-  if (!data) return <Stat label={label} value="—" tone="muted" sub="Save at least two monthly snapshots to see this." />;
+  if (!data) return <Stat label={label} value="—" tone="muted" sub={label.startsWith("Annual") ? "Appears once you have snapshots 12 months apart." : "Save at least two monthly snapshots to see this."} />;
   return (
     <div>
       <Stat label={label} value={signed(data.change)} tone={data.change >= 0 ? "good" : "bad"} sub={`Over ${data.gap} month${data.gap === 1 ? "" : "s"}`} />
@@ -54,6 +55,7 @@ function Change({ label, data }: { label: string; data: { change: number; assetC
 export function NetWorthTracker() {
   const { state, update } = useToolkit();
   const nw = state.netWorth;
+  const summaryAll = useMemo(() => toolkitSummary(state), [state]);
   const sheet = effectiveNetWorth(state);
   const sum = netWorthSummary(sheet);
   const syncedAssets = sheet.assets.filter((a) => a.id.startsWith("sync-"));
@@ -128,6 +130,10 @@ export function NetWorthTracker() {
         <Card>
           <Stat label="Home equity" value={usd(sum.homeEquity)} sub={sum.propertyValue > 0 ? `${usd(sum.propertyValue)} value − ${usd(sum.mortgages)} mortgage. Counted once.` : "Add real estate below if you own property."} />
         </Card>
+      </div>
+
+      <div className="mt-4">
+        <GoalDateCard state={state} t={summaryAll} />
       </div>
 
       {/* Entry */}

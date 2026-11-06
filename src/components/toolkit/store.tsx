@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { blankState, normalizeState, sampleState, type ToolkitState } from "@/lib/toolkit/model";
+import { blankState, normalizeState, sampleState as rawSample, type ToolkitState } from "@/lib/toolkit/model";
+import { primeCelebrations } from "@/lib/toolkit/calc";
 
 /**
  * Stage 1 storage: the whole toolkit lives in one localStorage key in this browser only.
@@ -60,12 +61,14 @@ export function useToolkit() {
   return ctx;
 }
 
-export { sampleState, blankState };
+/** The fictional demo family, with its existing wins already celebrated. */
+export const sampleState = () => primeCelebrations(rawSample());
+export { blankState };
 
 /* ---------------- Hash routing: "#/debt" etc. Works the same on Vercel and in a static preview. ---------------- */
 
-export type View = "dashboard" | "paycheck" | "debt" | "emergency" | "investing" | "benefits" | "reset" | "net-worth" | "data" | "welcome";
-const VIEWS: View[] = ["dashboard", "paycheck", "debt", "emergency", "investing", "benefits", "reset", "net-worth", "data", "welcome"];
+export type View = "dashboard" | "paycheck" | "debt" | "emergency" | "investing" | "benefits" | "reset" | "results" | "net-worth" | "data" | "welcome";
+const VIEWS: View[] = ["dashboard", "paycheck", "debt", "emergency", "investing", "benefits", "reset", "results", "net-worth", "data", "welcome"];
 
 function readView(): View {
   if (typeof window === "undefined") return "dashboard";
