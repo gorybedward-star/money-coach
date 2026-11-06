@@ -23,6 +23,10 @@ The plan (sitemap, visual system, homepage structure, conversion journey) is in 
 | Interactive Money Roadmap: check off steps, progress saved in the visitor's browser | Working (Phase 2) |
 | Printable / save-as-PDF results on every calculator | Working (Phase 2) |
 
+## Financial Reset Toolkit ($39), Stage 1 prototype
+
+A synchronized personal finance dashboard at `/toolkit`: Net Worth Tracker (flagship), Paycheck Planner, Debt Freedom Tracker, Emergency Fund Builder, Investing Calculator, Employee Benefits Checklist and a 30-Day Money Reset with a scorecard. Numbers are entered once and flow across modules. Prototype only: fictional sample data and browser storage, no login or payments yet. Details, calculation notes and the Stage 2-4 plan: [`docs/TOOLKIT.md`](docs/TOOLKIT.md).
+
 ## 7-Week Client Success System (coach dashboard and client portal)
 
 Phase 1 and the Week 1 pilot live at `/coach` and `/portal`, backed by Supabase (logins + database with row-level security) and Resend (email). Setup, security model and the step-by-step test guide are in [`docs/CLIENT-SUCCESS-SYSTEM.md`](docs/CLIENT-SUCCESS-SYSTEM.md). Until the Supabase environment variables are set, these pages show an "almost ready" notice and the public site is unaffected.

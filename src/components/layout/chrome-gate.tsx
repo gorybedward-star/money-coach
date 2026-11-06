@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 /** Paths that use the calm app layout instead of the marketing header and footer. */
-const APP_PREFIXES = ["/coach", "/portal", "/login", "/onboard", "/forgot-password", "/reset-password"];
+const APP_PREFIXES = ["/toolkit", "/coach", "/portal", "/login", "/onboard", "/forgot-password", "/reset-password"];
 
 export function isAppPath(pathname: string | null) {
   return !!pathname && APP_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));

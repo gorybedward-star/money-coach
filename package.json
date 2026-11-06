@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "node --test tests/*.mts",
     "typecheck": "tsc --noEmit",
-    "preview:build": "npx --yes esbuild@0.24.0 preview/entry.tsx --bundle --minify --format=iife --jsx=automatic --target=es2020 --tsconfig=tsconfig.json --alias:next/link=./preview/shims/link.tsx --alias:next/image=./preview/shims/image.tsx --alias:next/navigation=./preview/shims/navigation.ts --define:process.env.NODE_ENV='\"production\"' --banner:js='var process={env:{NEXT_PUBLIC_DISABLE_FORMS:\"1\"}};' --outfile=preview/out/app.js && python3 preview/build.py"
+    "preview:build": "npx --yes esbuild@0.24.0 preview/entry.tsx --bundle --minify --format=iife --jsx=automatic --target=es2020 --tsconfig=tsconfig.json --alias:next/link=./preview/shims/link.tsx --alias:next/image=./preview/shims/image.tsx --alias:next/navigation=./preview/shims/navigation.ts --define:process.env.NODE_ENV='\"production\"' --banner:js='var process={env:{NEXT_PUBLIC_DISABLE_FORMS:\"1\"}};' --outfile=preview/out/app.js && python3 preview/build.py",
+    "preview:toolkit": "npx --yes esbuild@0.24.0 preview/toolkit-entry.tsx --bundle --minify --format=iife --jsx=automatic --target=es2020 --tsconfig=tsconfig.json --define:process.env.NODE_ENV='\"production\"' --outfile=preview/out/toolkit.js && python3 preview/build-toolkit.py"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -20,6 +21,7 @@
     "next": "15.5.28",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "recharts": "^2.15.4",
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.7.0"
   },
