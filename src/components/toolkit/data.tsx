@@ -9,6 +9,7 @@ import { Btn, Card, PageHeader } from "./ui";
 export function DataSettings() {
   const { state, replace, persisted } = useToolkit();
   const [msg, setMsg] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState<"sample" | "delete" | null>(null);
   const file = useRef<HTMLInputElement>(null);
 
   const exportJson = () => {
@@ -53,10 +54,23 @@ export function DataSettings() {
             <Btn variant="secondary" className="justify-start" onClick={exportJson}><Download className="size-4" /> Export my data (JSON)</Btn>
             <Btn variant="secondary" className="justify-start" onClick={() => file.current?.click()}><Upload className="size-4" /> Import a saved file</Btn>
             <input ref={file} type="file" accept="application/json,.json" className="hidden" onChange={(e) => e.target.files?.[0] && importJson(e.target.files[0])} />
-            <Btn variant="secondary" className="justify-start" onClick={() => { if (state.mode !== "own" || confirm("Replace your numbers with the sample family? Export first if you want to keep them.")) { replace(sampleState()); setMsg("Sample family loaded."); } }}><Sparkles className="size-4" /> Load the sample family</Btn>
+            <Btn variant="secondary" className="justify-start" onClick={() => { if (state.mode === "own" && state.onboarded) setConfirming("sample"); else { replace(sampleState()); setMsg("Sample family loaded."); } }}><Sparkles className="size-4" /> Load the sample family</Btn>
             <Btn variant="secondary" className="justify-start" onClick={() => { replace({ ...state, onboarded: false }); go("welcome"); }}><RotateCcw className="size-4" /> Run the setup wizard again</Btn>
-            <Btn variant="danger" className="justify-start" onClick={() => { if (confirm("Delete everything saved in this toolkit on this browser? This can't be undone.")) { try { localStorage.removeItem(STORAGE_KEY); } catch {} replace(blankState()); go("welcome"); } }}><Trash2 className="size-4" /> Delete all my data</Btn>
+            <Btn variant="danger" className="justify-start" onClick={() => setConfirming("delete")}><Trash2 className="size-4" /> Delete all my data</Btn>
           </div>
+          {confirming && (
+            <div role="alertdialog" aria-label="Confirm" className="mt-4 rounded-xl border border-[#b4483c]/30 bg-[#b4483c]/5 p-4 text-sm text-[#7a2c24]">
+              <p>{confirming === "delete" ? "Delete everything saved in this toolkit on this browser? This can't be undone." : "Replace your numbers with the sample family? Export first if you want to keep them."}</p>
+              <div className="mt-3 flex gap-2">
+                <Btn variant="danger" onClick={() => {
+                  if (confirming === "delete") { try { localStorage.removeItem(STORAGE_KEY); } catch {} replace(blankState()); go("welcome"); }
+                  else { replace(sampleState()); setMsg("Sample family loaded."); }
+                  setConfirming(null);
+                }}>{confirming === "delete" ? "Yes, delete everything" : "Yes, replace"}</Btn>
+                <Btn variant="secondary" onClick={() => setConfirming(null)}>Cancel</Btn>
+              </div>
+            </div>
+          )}
           {msg && <p role="status" className="mt-4 text-sm text-[#167d68]">{msg}</p>}
         </Card>
       </div>
