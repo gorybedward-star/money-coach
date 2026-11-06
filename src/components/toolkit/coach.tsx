@@ -27,7 +27,7 @@ export function NextMoveCard({ state, t }: { state: ToolkitState; t: Summary }) 
           </a>
         </div>
         <div className="border-t border-[#eef1f5] bg-[#f8faf9] p-5 sm:p-6 lg:border-l lg:border-t-0">
-          <Eyebrow>The Money Coach order</Eyebrow>
+          <Eyebrow>Your path, step by step</Eyebrow>
           <ol className="mt-3 space-y-2">
             {move.path.map((p, i) => {
               const isCurrent = p.id === move.id;

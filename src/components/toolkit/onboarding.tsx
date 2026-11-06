@@ -15,7 +15,7 @@ const STEPS = ["Paycheck", "Safety net & debts", "What you own", "Your goal"];
 export function Onboarding() {
   const { replace, state } = useToolkit();
   const [step, setStep] = useState(-1);
-  const [d, setD] = useState<ToolkitState>(() => ({ ...blankState(), debt: { debts: [{ id: uid("d"), name: "", balance: 0, apr: 0, minPayment: 0, startBalance: 0 }], extra: 0, strategy: "avalanche" } }));
+  const [d, setD] = useState<ToolkitState>(() => ({ ...blankState(), debt: { debts: [{ id: uid("d"), name: "", balance: 0, apr: 0, minPayment: 0, startBalance: 0 }], extra: 0, strategy: "snowball" } }));
   const [q, setQ] = useState<Quick>({ cash: 0, retirement: 0, brokerage: 0, vehicle: 0, home: 0, mortgage: 0 });
 
   const finish = () => {

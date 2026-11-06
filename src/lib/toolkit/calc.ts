@@ -431,29 +431,33 @@ const usd0 = (n: number) => Math.round(n).toLocaleString("en-US", { style: "curr
 const usd2 = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 /**
- * The one thing to do next, following the Money Coach order: a plan that balances, a starter emergency fund, the full
- * employer match, high-interest debt, protection, 3+ months of savings, then investing 15%. Uses only what's entered.
+ * The one thing to do next. The order follows Dave Ramsey's 7 Baby Steps with two Money Coach additions (keep the
+ * full employer match, review protection early): a plan that balances, a $1,000 starter fund, the employer match,
+ * protection, every non-mortgage debt (snowball or avalanche order, with its cost per day), 3+ months saved,
+ * investing 15%, then the mortgage. Uses only what's entered.
  */
 export function nextBestMove(s: ToolkitState, t = toolkitSummary(s)): NextMove {
   const st = (id: string) => s.benefits.items[id]?.status ?? "not-started";
   const retirementIds = s.benefits.federal ? ["tsp", "401k-match"] : ["401k-match"];
   const matchStatus = retirementIds.map(st);
   const matchDone = matchStatus.some((x) => x === "using" || x === "not-offered");
-  const high = s.debt.debts.filter((d) => d.balance > 0 && d.apr >= HIGH_INTEREST_APR);
+  const debts = s.debt.debts.filter((d) => d.balance > 0);
   const protectionDone = PROTECTION_ITEMS.every((id) => st(id) !== "not-started") && !!s.reset.done["w3-beneficiaries"];
   const em = t.emergency;
   const starter = em.goals[0];
   const three = em.goals[1];
   const invRate = t.pay.income > 0 ? t.pay.investing / t.pay.income : 0;
+  const mortgage = s.netWorth.properties.reduce((a, p) => a + pos(p.mortgage), 0);
 
   const path: PathStep[] = [
     { id: "plan", label: "Plan that balances", done: t.pay.income > 0 && t.pay.remaining >= 0 },
-    { id: "starter", label: "Starter emergency fund", done: em.current >= starter.target },
+    { id: "starter", label: `${usd0(starter.target)} starter fund`, done: em.current >= starter.target },
     { id: "match", label: "Full employer match", done: matchDone },
-    { id: "high-debt", label: "High-interest debt gone", done: high.length === 0 },
     { id: "protect", label: "Family protected", done: protectionDone },
-    { id: "three", label: "3+ months saved", done: three.target > 0 && em.current >= three.target },
+    { id: "debt", label: "Debt free except the house", done: debts.length === 0 },
+    { id: "three", label: "3 to 6 months saved", done: three.target > 0 && em.current >= three.target },
     { id: "invest", label: "Investing 15%", done: invRate >= 0.15 },
+    { id: "mortgage", label: "Home paid off", done: mortgage === 0 },
   ];
   const mk = (id: string, title: string, detail: string, href: string, cta: string): NextMove => ({ id, title, detail, href, cta, path });
 
@@ -466,26 +470,28 @@ export function nextBestMove(s: ToolkitState, t = toolkitSummary(s)): NextMove {
   }
   if (!matchDone) {
     const name = s.benefits.federal ? "TSP agency match" : "employer match";
-    return mk("match", `Capture your full ${name}`, s.benefits.federal ? "Contributing at least 5% of basic pay gets you the full 5% from your agency under FERS. Confirm it, then mark it in your Benefits Checklist." : "Matching dollars are an instant return you can't get anywhere else. Ask HR what you need to contribute to get all of it, then mark it in your Benefits Checklist.", "benefits", "Check my benefits");
-  }
-  if (high.length) {
-    const order = priorityOrder(high, s.debt.strategy);
-    const target = high.find((d) => d.id === order[0])!;
-    const perDay = (target.balance * target.apr) / 100 / 365;
-    const extra = s.debt.extra > 0 ? `Put your extra ${usd0(s.debt.extra)} a month here` : "Add even $50 a month extra here";
-    return mk("high-debt", `Pay off your ${target.name || "highest-priority debt"}`, `At ${target.apr}% it costs you about ${usd2(perDay)} a day in interest. ${extra}, and it's gone around ${monthLabel(t.plan.perDebt[target.id]?.month ?? t.plan.months)}.`, "debt", "Open Debt Tracker");
+    return mk("match", `Capture your full ${name}`, s.benefits.federal ? "Contributing at least 5% of basic pay gets you the full 5% from your agency under FERS. Keep it going while you pay off debt, then mark it in your Benefits Checklist." : "Matching dollars are an instant return you can't get anywhere else, so keep them coming while you pay off debt. Ask HR what you need to contribute to get all of it, then mark it in your Benefits Checklist.", "benefits", "Check my benefits");
   }
   if (!protectionDone) return mk("protect", "Protect what you're building", "Review your health, life and disability coverage and confirm your beneficiaries. One illness, injury or loss shouldn't undo your progress. Insurance is regulated by each state; talk with a licensed professional before buying coverage.", "benefits", "Review my protection");
+  if (debts.length) {
+    const order = priorityOrder(debts, s.debt.strategy);
+    const target = debts.find((d) => d.id === order[0])!;
+    const perDay = (target.balance * target.apr) / 100 / 365;
+    const extra = s.debt.extra > 0 ? `Put your extra ${usd0(s.debt.extra)} a month here` : "Add even $50 a month extra here";
+    const why = s.debt.strategy === "snowball" ? "It's your smallest balance, so it's your quickest win." : "It has your highest rate.";
+    const cost = perDay >= 0.01 ? ` At ${target.apr}% it costs you about ${usd2(perDay)} a day in interest.` : "";
+    return mk("debt", `Pay off your ${target.name || "highest-priority debt"}`, `${why}${cost} ${extra}, and it's gone around ${monthLabel(t.plan.perDebt[target.id]?.month ?? t.plan.months)}. Then roll its payment into the next one.`, "debt", "Open Debt Tracker");
+  }
   if (three.target > 0 && em.current < three.target) {
     const left = three.target - em.current;
-    return mk("three", "Grow your emergency fund to 3 months", `${usd0(left)} to go to cover 3 months of essentials${em.monthly > 0 ? `, about ${Math.ceil(left / em.monthly)} months at your current pace` : ""}.`, "emergency", "Open Emergency Fund");
+    return mk("three", "Grow your emergency fund to 3 to 6 months", `${usd0(left)} to go to cover 3 months of essentials${em.monthly > 0 ? `, about ${Math.ceil(left / em.monthly)} months at your current pace` : ""}. Your old debt payments can go here now.`, "emergency", "Open Emergency Fund");
   }
   if (invRate < 0.15) {
     const add = Math.max(0, 0.15 * t.pay.income - t.pay.investing);
-    return mk("invest", "Invest 15% of your take-home pay", `You're investing ${(invRate * 100).toFixed(0)}% now. Adding about ${usd0(add)} a month gets you to 15%. Raising it 1% at a time works too.`, "investing", "See what it grows to");
+    return mk("invest", "Invest 15% for retirement", `You're investing ${(invRate * 100).toFixed(0)}% of take-home pay now. Adding about ${usd0(add)} a month gets you to 15%. Raising it 1% at a time works too.`, "investing", "See what it grows to");
   }
-  if (t.progress.current > 0) return mk("debt-free", "Finish off your remaining debt", `Your foundation is in place. You're on track to be debt-free around ${monthLabel(t.plan.months)}.`, "debt", "Open Debt Tracker");
-  return mk("grow", "Stay the course and grow", `Your foundation is complete. Keep investing every month and save a net worth snapshot each month on your way to ${usd0(s.netWorth.goal)}.`, "net-worth", "Open Net Worth");
+  if (mortgage > 0) return mk("mortgage", "Pay off your home early", `You owe ${usd0(mortgage)} on your home. Extra payments toward principal, even one a year, can take years off. If you have children, saving for college fits here too.`, "net-worth", "Open Net Worth");
+  return mk("grow", "Build wealth and give", `Your foundation is complete. Keep investing every month, give generously, and save a net worth snapshot each month on your way to ${usd0(s.netWorth.goal)}.`, "net-worth", "Open Net Worth");
 }
 
 // ---------------------------------------------------------------- Goal date + what-if
