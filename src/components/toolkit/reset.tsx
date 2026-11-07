@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, Award, Check, Flame, Target } from "lucide-react";
-import { CLOSING_QUESTION, MODULES, PROTECTION_DISCLAIMER, RESET_WEEKS, type ResetTask } from "@/content/toolkit";
+import { CLOSING_QUESTION, MODULES, PROTECTION_DISCLAIMER, RESET_ORDER_NOTE, RESET_WEEKS, type ResetTask } from "@/content/toolkit";
 import { benefitIdsFor, resetProgress, scorecard } from "@/lib/toolkit/calc";
 import { dayKey } from "@/lib/toolkit/model";
 import { cn } from "@/lib/utils";
@@ -48,6 +48,7 @@ export function MoneyReset() {
           </div>
         </div>
       </PageHeader>
+      <p className="-mt-2 mb-6 max-w-3xl text-[12.5px] leading-relaxed text-[#5f6f86]">{RESET_ORDER_NOTE}</p>
 
       {today ? (
         <Card className="mb-6 border-[#167d68]/30" pad={false}>

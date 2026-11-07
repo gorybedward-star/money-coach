@@ -182,7 +182,7 @@ export function blankState(): ToolkitState {
       savings: 0,
       investing: 0,
     },
-    debt: { debts: [], extra: 0, strategy: "avalanche" },
+    debt: { debts: [], extra: 0, strategy: "snowball" },
     emergency: { current: 0, essentialsFromPaycheck: true, essentials: 0, contribution: 0, frequency: "biweekly", starterGoal: 1000, goal: "starter", syncToNetWorth: true, contributionFromPaycheck: true },
     investing: { start: 0, monthly: 0, returnPct: 7, years: 25, inflationPct: 3, showReal: false, startFromNetWorth: true, monthlyFromPaycheck: true },
     benefits: { federal: false, items: {} },
@@ -243,7 +243,7 @@ export function sampleState(today = new Date()): ToolkitState {
       savings: 250,
       investing: 300,
     },
-    debt: { debts, extra: 150, strategy: "avalanche" },
+    debt: { debts, extra: 150, strategy: "snowball" },
     emergency: { current: 2_400, essentialsFromPaycheck: true, essentials: 0, contribution: 125, frequency: "biweekly", starterGoal: 1000, goal: "three", syncToNetWorth: true, contributionFromPaycheck: true },
     investing: { start: 0, monthly: 0, returnPct: 7, years: 25, inflationPct: 3, showReal: false, startFromNetWorth: true, monthlyFromPaycheck: true },
     benefits: {
@@ -259,14 +259,15 @@ export function sampleState(today = new Date()): ToolkitState {
     },
     reset: {
       // Day 12 of the 30 days, on a 3-day streak.
-      done: { "w1-start": true, "w1-numbers": true, "w1-spend": true, "w1-subs": true, "w2-cards": true, "w2-call": true },
+      done: { "w1-start": true, "w1-numbers": true, "w1-spend": true, "w1-subs": true, "w3-starter": true, "w3-account": true, "w2-cards": true },
       doneAt: {
         "w1-start": addDays(dayKey(today), -11),
         "w1-numbers": addDays(dayKey(today), -10),
         "w1-spend": addDays(dayKey(today), -7),
-        "w1-subs": addDays(dayKey(today), -3),
-        "w2-cards": addDays(dayKey(today), -2),
-        "w2-call": addDays(dayKey(today), -1),
+        "w1-subs": addDays(dayKey(today), -6),
+        "w3-starter": addDays(dayKey(today), -3),
+        "w3-account": addDays(dayKey(today), -2),
+        "w2-cards": addDays(dayKey(today), -1),
       },
       move: {
         priority: "Pay off the store card",

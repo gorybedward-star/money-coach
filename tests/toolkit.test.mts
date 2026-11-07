@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { blankState, normalizeState, sampleState, type Debt } from "../src/lib/toolkit/model.ts";
+import { RESET_STEPS } from "../src/content/toolkit.ts";
 import {
   attribute,
   captureBaseline,
@@ -230,13 +231,19 @@ test("sync: 30-Day Reset steps check themselves off from real data", () => {
   assert.ok(Object.values(b).every((v) => !v));
 });
 
-test("Next Best Move follows the Money Coach order", () => {
+test("Next Best Move follows the Baby Steps order with the Money Coach additions", () => {
   const s = sampleState(new Date(2026, 10, 6));
-  // Sample family: plan balances, starter fund done, match in use, so high-interest debt is next (avalanche: Store card 29.99%).
-  const m = nextBestMove(s);
-  assert.equal(m.id, "high-debt");
+  // Sample family: plan balances, starter fund done, match in use, protection reviewed except beneficiaries.
+  assert.equal(nextBestMove(s).id, "protect");
+  const protectedFamily = { ...s, reset: { ...s.reset, done: { ...s.reset.done, "w3-beneficiaries": true } } };
+  // Then the debt snowball: smallest balance first (Store card $900).
+  const m = nextBestMove(protectedFamily);
+  assert.equal(m.id, "debt");
   assert.match(m.title, /Store card/);
   assert.match(m.detail, /\$0\.74 a day/); // 900 × 29.99% ÷ 365
+  // Every non-mortgage debt counts, even low-rate ones.
+  const onlyAuto = { ...protectedFamily, debt: { ...s.debt, debts: s.debt.debts.map((d) => (d.id === "d-auto" ? d : { ...d, balance: 0 })) } };
+  assert.match(nextBestMove(onlyAuto).title, /Auto loan/);
   // A plan that overspends comes first.
   const over = { ...s, paycheck: { ...s.paycheck, expenses: { ...s.paycheck.expenses, other: 2000 } } };
   assert.equal(nextBestMove(over).id, "plan");
@@ -246,10 +253,20 @@ test("Next Best Move follows the Money Coach order", () => {
   // Match not confirmed yet comes before debt.
   const noMatch = { ...s, benefits: { ...s.benefits, items: { ...s.benefits.items, "401k-match": { status: "not-started" as const, note: "" } } } };
   assert.equal(nextBestMove(noMatch).id, "match");
-  // Debts gone: protection review is next (beneficiaries not confirmed).
-  const paid = { ...s, debt: { ...s.debt, debts: s.debt.debts.map((d) => (d.apr >= 8 ? { ...d, balance: 0 } : d)) } };
-  assert.equal(nextBestMove(paid).id, "protect");
+  // Debts gone: 3 to 6 months of savings is next.
+  const debtFree = { ...protectedFamily, debt: { ...s.debt, debts: s.debt.debts.map((d) => ({ ...d, balance: 0 })) } };
+  assert.equal(nextBestMove(debtFree).id, "three");
   assert.equal(nextBestMove(blankState()).id, "plan");
+  assert.deepEqual(m.path.map((p) => p.id), ["plan", "starter", "match", "protect", "debt", "three", "invest", "mortgage"]);
+});
+
+test("30-day plan: 30 steps, one per day, savings before debt", () => {
+  assert.equal(RESET_STEPS.length, 30);
+  assert.deepEqual(RESET_STEPS.map((x) => x.day), Array.from({ length: 30 }, (_, i) => i + 1));
+  assert.equal(new Set(RESET_STEPS.map((x) => x.id)).size, 30);
+  const day = (id: string) => RESET_STEPS.find((x) => x.id === id)!.day;
+  assert.ok(day("w3-auto") < day("w2-debts"));
+  assert.ok(day("w3-starter") < day("w2-pay"));
 });
 
 test("goal date: savings only reaches the goal on schedule; extra money gets there sooner", () => {
@@ -276,7 +293,7 @@ test("30-day reset: day number, streak and today's step", () => {
   const rp = resetProgress(s, undefined, "2026-11-06");
   assert.equal(rp.day, 12);
   assert.equal(rp.streak, 3);
-  assert.equal(rp.todayStep!.id, "w2-pay");
+  assert.equal(rp.todayStep!.id, "w2-call"); // days 1-12 done or checked by data; next open step is day 17
   assert.equal(rp.total, 30);
 });
 
